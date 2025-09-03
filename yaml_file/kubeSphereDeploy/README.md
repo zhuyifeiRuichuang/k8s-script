@@ -1,2 +1,3 @@
 存档记录kubeSphere部署时使用的配置文件。  
-deploy_v1.yaml | 可最小化部署 | 需手动修复部署过程中缺失镜像问题 | 需手动修复部分pod缺失证书问题 
+deploy_v1.yaml | 最小化部署 | 1master+2work  
+deploy_v2.yaml | 全量部署 | 3master+2work
