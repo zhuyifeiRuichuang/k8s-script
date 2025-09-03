@@ -1,7 +1,0 @@
-#!/bin/bash
-# 用于拉取对象存储指定文件 
-# 先web界面或管理员配置一个只读用户reader,密码Shandong@123
-# 配置存储别名为myminio
-mc alias set myminio http://172.16.0.19:9000 reader Shandong@123
-# 下载指定文件到指定目录
-mc get myminio/kubesphere/README.txt /opt/
