@@ -1,7 +1,7 @@
 #!/bin/bash
 # 用于拉取minio对象存储指定文件 
-# 先web界面或管理员配置一个只读用户reader
-# 配置存储别名
-mc alias set myminio http://172.16.0.19:9000 reader Shandong@123 
+
 # 下载指定文件到指定目录
-mc get myminio/kubesphere/README.txt /opt/
+mc get myminio/kubesphere/kubesphere/kubekey/kubekey-v3.1.11-linux-amd64.tar.gz /opt/
+mc get myminio/kubesphere/artifact/ks341offline_v5.tar.gz /opt/
+mc get myminio/kubesphere/configFile/deploy_v6.yaml /opt/
