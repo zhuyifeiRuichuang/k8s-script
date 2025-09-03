@@ -5,3 +5,4 @@
 mc get myminio/kubesphere/configFile/deploy_v6.yaml /opt/
 mc get myminio/kubesphere/kubesphere/kubekey/kubekey-v3.1.11-linux-amd64.tar.gz /opt/
 mc get myminio/kubesphere/artifact/ks341offline_v5.tar.gz /opt/
+mc get myminio/kubesphere/交付部署 /opt/
