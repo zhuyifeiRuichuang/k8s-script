@@ -1,5 +1,5 @@
 #!/bin/bash
-
+# ubutnu24检测服务器配置
 # 检查是否以root权限运行（某些信息需要root权限）
 if [ "$(id -u)" -ne 0 ]; then
     echo "警告：部分硬件信息可能需要root权限才能完全显示"
