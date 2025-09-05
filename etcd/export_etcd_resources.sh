@@ -79,7 +79,7 @@ print_help() {
     echo "导出etcd中的资源到指定目录"
     echo
     echo "选项:"
-    echo "  -d, --dir      指定基础目录，默认: ${DEFAULT_BASE_DIR}"
+    echo "  -d, --dir      指定存放数据的基础目录，默认: ${DEFAULT_BASE_DIR}"
     echo "  -r, --resource 指定要处理的资源类型，默认: ${DEFAULT_RESOURCE}"
     echo "  -f, --file     从文件中读取要处理的资源类型列表"
     echo "  --help         显示帮助信息"
