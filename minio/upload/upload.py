@@ -110,11 +110,15 @@ class UploadTask:
 tasks = []
 task_threads = []
 progress_complete = False
+config_info = ""  # 新增：保存配置文件信息，用于持久显示
 
 def update_console_display():
-    """动态刷新控制台显示"""
-    global tasks, progress_complete
+    """动态刷新控制台显示，保留配置文件信息"""
+    global tasks, progress_complete, config_info
     sys.stdout.write("\033[H\033[J")  # 清屏
+    
+    # 持久显示配置文件信息和日志路径（每次刷新都重新打印）
+    print(config_info)
     print(f"详细日志: {log_file}\n")
     print(f"任务总数: {len(tasks)} | 状态: {'运行中' if not progress_complete else '已完成'}\n")
     
@@ -438,7 +442,7 @@ def run_dir_task(task, minio_client, bucket_name):
         log(f"任务[{task.task_name}]失败: {error_msg}")
 
 def main():
-    global tasks, task_threads, progress_complete
+    global tasks, task_threads, progress_complete, config_info  # 引用全局配置信息变量
     
     # 解析命令行参数
     parser = argparse.ArgumentParser(description='MinIO多文件/目录上传工具（日志目录优化）')
@@ -447,24 +451,21 @@ def main():
 
     # 确定配置文件
     config_file = args.file
-    config_source = ""  # 记录配置文件来源
     if not config_file:
         # 自动查找当前目录第一个.conf文件
         config_file = find_first_conf_file()
         if not config_file:
             print("错误: 未指定配置文件，且当前目录未找到任何.conf文件")
             sys.exit(1)
-        config_source = f"未指定配置文件，自动使用当前目录第一个.conf文件: {os.path.abspath(config_file)}\n"
+        config_info = f"未指定配置文件，自动使用当前目录第一个.conf文件: {os.path.abspath(config_file)}\n"
     else:
         # 检查指定的配置文件是否存在
         if not os.path.exists(config_file):
             print(f"错误: 指定的配置文件不存在: {config_file}")
             sys.exit(1)
-        config_source = f"使用指定的配置文件: {os.path.abspath(config_file)}\n"
+        config_info = f"使用指定的配置文件: {os.path.abspath(config_file)}\n"
     
-    # 显示配置文件信息
-    print(config_source)
-    print(f"详细日志将输出到: {log_file}\n")
+    # 记录日志信息（不再在这里打印，改为在刷新函数中显示）
     log("===== 脚本开始执行 =====")
     log(f"使用配置文件: {os.path.abspath(config_file)}")
     
