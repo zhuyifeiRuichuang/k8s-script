@@ -12,11 +12,28 @@ import argparse
 from minio import Minio
 from minio.error import S3Error
 
-# 生成日志文件名
+# 获取脚本所在目录的绝对路径
+SCRIPT_DIR = os.path.dirname(os.path.abspath(__file__))
+# 日志目录路径（脚本所在目录下的log子目录）
+LOG_DIR = os.path.join(SCRIPT_DIR, 'log')
+
+# 确保日志目录存在，不存在则创建
+def ensure_log_dir():
+    if not os.path.exists(LOG_DIR):
+        try:
+            os.makedirs(LOG_DIR, exist_ok=True)  # exist_ok=True 避免目录已存在时报错
+            print(f"已创建日志目录: {LOG_DIR}")
+        except Exception as e:
+            print(f"创建日志目录失败: {str(e)}")
+            sys.exit(1)
+
+# 生成日志文件名（包含完整路径）
 def generate_log_filename():
+    ensure_log_dir()  # 确保日志目录存在
     date_str = datetime.datetime.now().strftime("%Y%m%d%H%M%S")
     random_str = ''.join(random.choices(string.ascii_letters + string.digits, k=6))
-    return f"{date_str}_{random_str}_upload_minio.log"
+    # 日志文件路径 = 日志目录 + 文件名
+    return os.path.join(LOG_DIR, f"{date_str}_{random_str}_upload_minio.log")
 
 # 全局日志文件路径
 log_file = generate_log_filename()
@@ -424,7 +441,7 @@ def main():
     global tasks, task_threads, progress_complete
     
     # 解析命令行参数
-    parser = argparse.ArgumentParser(description='MinIO多文件/目录上传工具（支持忽略注释）')
+    parser = argparse.ArgumentParser(description='MinIO多文件/目录上传工具（日志目录优化）')
     parser.add_argument('-f', '--file', help='指定配置文件路径（默认查找当前目录第一个.conf文件）')
     args = parser.parse_args()
 
