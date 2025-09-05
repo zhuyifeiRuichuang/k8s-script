@@ -1,8 +1,21 @@
 #!/bin/bash
 
-# 默认配置
+# 日志配置 - 脚本所在目录的log目录
+SCRIPT_DIR=$(cd "$(dirname "${BASH_SOURCE[0]}")" &>/dev/null && pwd)
+LOG_DIR="${SCRIPT_DIR}/log"
+LOG_FILE="${LOG_DIR}/etcd_export_$(date +%Y%m%d_%H%M%S).log"
+
+# 确保日志目录存在
+mkdir -p "${LOG_DIR}" || {
+    echo "错误：无法创建日志目录 ${LOG_DIR}" >&2
+    exit 1
+}
+
+# 重定向输出到日志文件和终端
+exec > >(tee -a "${LOG_FILE}") 2>&1
+
+# 配置
 DEFAULT_BASE_DIR="/tmp"
-DEFAULT_RESOURCE="namespaces"
 ETCD_ENDPOINTS="http://127.0.0.1:2389"
 ETCDCTL_PATH="./etcdctl"
 ETCDCTL_CMD="ETCDCTL_API=3 ${ETCDCTL_PATH} --endpoints=${ETCD_ENDPOINTS}"
@@ -34,7 +47,7 @@ parse_args() {
                 exit 0
                 ;;
             *)
-                echo "错误：未知参数 $1"
+                echo "错误：未知参数 $1" >&2
                 print_help
                 exit 1
                 ;;
@@ -46,11 +59,18 @@ parse_args() {
         base_dir="${DEFAULT_BASE_DIR}"
     fi
 
+    # 检查资源参数 - 必须指定-r或-f
+    if [ -z "${resource}" ] && [ -z "${resource_file}" ]; then
+        echo "错误：必须使用 -r 指定资源类型或使用 -f 指定资源文件" >&2
+        print_help
+        exit 1
+    fi
+
     # 确定资源列表
     if [ -n "${resource_file}" ]; then
         # 从文件读取资源列表
         if [ ! -f "${resource_file}" ]; then
-            echo "错误：资源清单文件 ${resource_file} 不存在"
+            echo "错误：资源清单文件 ${resource_file} 不存在" >&2
             exit 1
         fi
         # 读取文件内容，忽略空行和注释
@@ -61,15 +81,12 @@ parse_args() {
         done < "${resource_file}"
         
         if [ ${#RESOURCES[@]} -eq 0 ]; then
-            echo "警告：资源清单文件 ${resource_file} 中没有有效的资源类型"
+            echo "错误：资源清单文件 ${resource_file} 中没有有效的资源类型" >&2
             exit 1
         fi
     elif [ -n "${resource}" ]; then
         # 使用指定的单个资源
         RESOURCES+=("${resource}")
-    else
-        # 使用默认资源
-        RESOURCES+=("${DEFAULT_RESOURCE}")
     fi
 }
 
@@ -80,8 +97,8 @@ print_help() {
     echo
     echo "选项:"
     echo "  -d, --dir      指定存放数据的基础目录，默认: ${DEFAULT_BASE_DIR}"
-    echo "  -r, --resource 指定要处理的资源类型，默认: ${DEFAULT_RESOURCE}"
-    echo "  -f, --file     从文件中读取要处理的资源类型列表"
+    echo "  -r, --resource 指定要处理的资源类型（必须指定-r或-f）"
+    echo "  -f, --file     从文件中读取要处理的资源类型列表（必须指定-r或-f）"
     echo "  --help         显示帮助信息"
     echo
     echo "示例:"
@@ -92,16 +109,16 @@ print_help() {
 # 检查etcdctl是否可执行
 check_etcdctl() {
     if [ ! -x "${ETCDCTL_PATH}" ]; then
-        echo "错误：etcdctl不存在或不可执行 - ${ETCDCTL_PATH}"
-        echo "请检查路径是否正确，并确保有执行权限"
+        echo "错误：etcdctl不存在或不可执行 - ${ETCDCTL_PATH}" >&2
+        echo "请检查路径是否正确，并确保有执行权限" >&2
         exit 1
     fi
     
     # 测试连接
     echo "测试etcd连接..."
     if ! eval "${ETCDCTL_CMD} endpoint health > /dev/null 2>&1"; then
-        echo "错误：无法连接到etcd服务 - ${ETCD_ENDPOINTS}"
-        echo "请检查endpoints是否正确，etcd服务是否运行"
+        echo "错误：无法连接到etcd服务 - ${ETCD_ENDPOINTS}" >&2
+        echo "请检查endpoints是否正确，etcd服务是否运行" >&2
         exit 1
     fi
     echo "etcd连接测试成功"
@@ -117,7 +134,7 @@ export_resource() {
     
     # 创建目标目录
     if ! mkdir -p "${target_dir}"; then
-        echo "错误：无法创建目录 ${target_dir}"
+        echo "错误：无法创建目录 ${target_dir}" >&2
         return 1
     fi
     
@@ -130,7 +147,7 @@ export_resource() {
     echo "查询 ${resource_type} 资源列表..."
     
     if ! eval "${full_cmd}"; then
-        echo "错误：查询 ${resource_type} 资源列表失败"
+        echo "错误：查询 ${resource_type} 资源列表失败" >&2
         return 1
     fi
     
@@ -158,7 +175,7 @@ export_resource() {
         if eval "${export_cmd}"; then
             echo "成功导出: ${yaml_file}"
         else
-            echo "错误：导出 ${resource_path} 失败"
+            echo "错误：导出 ${resource_path} 失败" >&2
         fi
     done < "${list_file}"
     
@@ -179,3 +196,4 @@ for res in "${RESOURCES[@]}"; do
 done
 
 echo "所有资源导出操作已完成"
+echo "操作日志已保存至: ${LOG_FILE}"
