@@ -10,3 +10,4 @@ init_mc.sh | 用于联网或离线环境初始化mc client | 需先手动下载�
 mc_login.sh | 需编辑后使用 | 用于登录minio，配置别名  
 mc_get.sh | 需编辑后使用 | 可自动拉取指定文件到当前Linux主机  
 mc_cp.sh | 需编辑后使用 | 可拉取指定目录到当前Linux主机  
+upload_to_minio | 上传指定文件和目录到minio
