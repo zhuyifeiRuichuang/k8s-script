@@ -10,9 +10,7 @@ import string
 
 # 生成日志文件名：日期+随机编码+upload_minio.log
 def generate_log_filename():
-    # 生成日期部分（年-月-日-时-分-秒）
     date_str = datetime.datetime.now().strftime("%Y%m%d%H%M%S")
-    # 生成随机编码（6位字母数字组合）
     random_str = ''.join(random.choices(string.ascii_letters + string.digits, k=6))
     return f"{date_str}_{random_str}_upload_minio.log"
 
@@ -29,8 +27,8 @@ def log(message):
 progress_steps = ["检查系统环境", "安装pip", "安装minio模块", "读取配置文件", "连接MinIO服务", "准备上传", "执行上传"]
 current_step = 0
 progress_complete = False
-total_files = 0
-uploaded_files = 0
+total_files = 0  # 总文件数（文件+目录中的文件）
+uploaded_files = 0  # 已上传文件数
 
 def update_progress():
     """更新进度条显示"""
@@ -52,7 +50,6 @@ def update_progress():
             else:
                 file_percent = 0
             percent = base_percent + file_percent
-            # 确保百分比不超过100
             if percent > 100:
                 percent = 100
         
@@ -114,7 +111,6 @@ def check_and_install_pip():
     try:
         log(f"使用{pkg_manager}执行更新操作")
         if pkg_manager == 'yum':
-            # 执行yum update并记录日志
             result = subprocess.run(['sudo', 'yum', 'update', '-y'], capture_output=True, text=True)
             log(f"yum update stdout: {result.stdout}")
             log(f"yum update stderr: {result.stderr}")
@@ -122,7 +118,6 @@ def check_and_install_pip():
                 log(f"yum update 失败，返回码: {result.returncode}")
                 return False
                 
-            # 安装python3-pip并记录日志
             log("开始安装python3-pip")
             result = subprocess.run(['sudo', 'yum', 'install', 'python3-pip', '-y'], capture_output=True, text=True)
             log(f"yum install python3-pip stdout: {result.stdout}")
@@ -131,7 +126,6 @@ def check_and_install_pip():
                 log(f"yum install python3-pip 失败，返回码: {result.returncode}")
                 return False
         else:  # apt
-            # 执行apt update并记录日志
             log("开始执行apt update")
             result = subprocess.run(['sudo', 'apt', 'update', '-y'], capture_output=True, text=True)
             log(f"apt update stdout: {result.stdout}")
@@ -140,7 +134,6 @@ def check_and_install_pip():
                 log(f"apt update 失败，返回码: {result.returncode}")
                 return False
                 
-            # 安装python3-pip并记录日志
             log("开始安装python3-pip")
             result = subprocess.run(['sudo', 'apt', 'install', 'python3-pip', '-y'], capture_output=True, text=True)
             log(f"apt install python3-pip stdout: {result.stdout}")
@@ -149,7 +142,6 @@ def check_and_install_pip():
                 log(f"apt install python3-pip 失败，返回码: {result.returncode}")
                 return False
         
-        # 验证安装结果
         try:
             importlib.import_module('pip')
             log("pip安装成功并验证通过")
@@ -172,7 +164,6 @@ def check_and_install_minio():
     except ImportError:
         log("未找到minio模块，开始安装...")
         try:
-            # 安装minio并记录日志
             result = subprocess.run([sys.executable, "-m", "pip", "install", "minio"], capture_output=True, text=True)
             log(f"pip install minio stdout: {result.stdout}")
             log(f"pip install minio stderr: {result.stderr}")
@@ -216,7 +207,6 @@ def read_config(config_file):
         log(error_msg)
         raise Exception(error_msg)
     
-    # 验证MinIO连接必要配置项
     required_keys = [
         'minio_client.endpoint', 'minio_client.access_key', 
         'minio_client.secret_key', 'minio_client.secure',
@@ -228,7 +218,6 @@ def read_config(config_file):
             log(error_msg)
             raise Exception(error_msg)
     
-    # 为可选配置设置默认值
     for key in ['local_file', 'object_name', 'local_dir', 'remote_dir']:
         if key not in config_data:
             config_data[key] = ""
@@ -256,10 +245,7 @@ def get_all_files_in_dir(local_dir):
 
 def upload_file(minio_client, bucket_name, local_file, object_name):
     """上传单个文件"""
-    global total_files, uploaded_files
-    total_files = 1
-    uploaded_files = 0
-    
+    global uploaded_files
     log(f"准备上传单个文件: {local_file} 到 {bucket_name}/{object_name}")
     if not os.path.isfile(local_file):
         error_msg = f"{local_file} 不是有效的文件"
@@ -267,14 +253,13 @@ def upload_file(minio_client, bucket_name, local_file, object_name):
         raise Exception(error_msg)
     
     if not object_name:
-        # 如果未指定对象名，使用本地文件名
         object_name = os.path.basename(local_file)
         log(f"未指定object_name，使用默认值: {object_name}")
     
     try:
         minio_client.fput_object(bucket_name, object_name, local_file)
-        uploaded_files = 1
-        log(f"文件 {local_file} 上传成功")
+        uploaded_files += 1
+        log(f"文件 {local_file} 上传成功，累计上传: {uploaded_files}")
     except Exception as e:
         error_msg = f"文件上传失败: {str(e)}"
         log(error_msg)
@@ -282,44 +267,38 @@ def upload_file(minio_client, bucket_name, local_file, object_name):
 
 def upload_directory(minio_client, bucket_name, local_dir, remote_dir):
     """上传目录"""
-    global total_files, uploaded_files
+    global uploaded_files
     files = get_all_files_in_dir(local_dir)
-    total_files = len(files)
-    uploaded_files = 0
+    dir_file_count = len(files)
     
-    if total_files == 0:
+    if dir_file_count == 0:
         log(f"警告: 目录 {local_dir} 中没有文件")
         return
     
-    log(f"开始上传目录 {local_dir} 到 {bucket_name}/{remote_dir}，共 {total_files} 个文件")
+    log(f"开始上传目录 {local_dir} 到 {bucket_name}/{remote_dir}，共 {dir_file_count} 个文件")
     for local_file in files:
-        # 计算相对路径（保持目录结构）
         relative_path = os.path.relpath(local_file, local_dir)
-        # 拼接MinIO中的目标路径
         if remote_dir:
             object_name = f"{remote_dir}/{relative_path}"
         else:
             object_name = relative_path
         
-        # 替换路径分隔符
         object_name = object_name.replace(os.sep, '/')
         
         try:
-            # 上传文件
             minio_client.fput_object(bucket_name, object_name, local_file)
             uploaded_files += 1
-            log(f"已上传 {uploaded_files}/{total_files}: {local_file} -> {object_name}")
+            log(f"已上传 {uploaded_files} 个文件: {local_file} -> {object_name}")
         except Exception as e:
             error_msg = f"文件 {local_file} 上传失败: {str(e)}"
             log(error_msg)
             raise Exception(error_msg)
     
-    log(f"目录 {local_dir} 上传完成，共上传 {uploaded_files} 个文件")
+    log(f"目录 {local_dir} 上传完成，该目录共上传 {dir_file_count} 个文件")
 
 def main():
-    global progress_complete, total_files, log_file
+    global progress_complete, total_files, uploaded_files, log_file
     
-    # 记录日志文件路径
     print(f"详细日志将输出到: {log_file}")
     log("===== 脚本开始执行 =====")
     
@@ -356,7 +335,6 @@ def main():
             secure=config['minio_client.secure']
         )
         
-        # 检查并创建桶
         if not minio_client.bucket_exists(config['bucket_name']):
             log(f"桶 {config['bucket_name']} 不存在，创建新桶")
             minio_client.make_bucket(config['bucket_name'])
@@ -364,38 +342,45 @@ def main():
             log(f"桶 {config['bucket_name']} 已存在")
         
         set_step(5)
-        # 检查要执行的操作类型
-        upload_type = None
-        upload_params = None
-        
-        # 检查是否配置了文件上传
-        if config['local_file'] and config['local_file'].strip():
-            upload_type = 'file'
-            upload_params = (config['local_file'], config['object_name'])
-            log(f"检测到文件上传配置: {config['local_file']}")
-        # 检查是否配置了目录上传
-        elif config['local_dir'] and config['local_dir'].strip():
-            upload_type = 'dir'
-            upload_params = (config['local_dir'], config['remote_dir'])
-            log(f"检测到目录上传配置: {config['local_dir']}")
-        else:
+        # 检查是否有文件和目录需要上传
+        has_local_file = config['local_file'] and config['local_file'].strip()
+        has_local_dir = config['local_dir'] and config['local_dir'].strip()
+
+        if not has_local_file and not has_local_dir:
             log("未配置任何要上传的文件或目录")
             print("\n未配置任何要上传的文件或目录，不执行上传操作")
             progress_complete = True
             log("===== 脚本正常退出 =====")
             sys.exit(0)
+
+        # 计算总文件数
+        total_files = 0
+        dir_files = []
+        if has_local_dir:
+            dir_files = get_all_files_in_dir(config['local_dir'])
+            total_files += len(dir_files)
+            log(f"目录 {config['local_dir']} 包含 {len(dir_files)} 个文件")
         
+        if has_local_file:
+            total_files += 1
+            log(f"检测到单个文件上传: {config['local_file']}")
+
+        # 初始化已上传计数
+        uploaded_files = 0
+
         set_step(6)
         # 执行上传
-        if upload_type == 'file':
-            upload_file(minio_client, config['bucket_name'], upload_params[0], upload_params[1])
-            result_msg = f"文件上传成功! 已上传 {uploaded_files} 个文件"
-        else:
-            upload_directory(minio_client, config['bucket_name'], upload_params[0], upload_params[1])
-            result_msg = f"目录上传成功! 共上传 {total_files} 个文件"
+        result_msg = []
+        if has_local_file:
+            upload_file(minio_client, config['bucket_name'], config['local_file'], config['object_name'])
+            result_msg.append(f"文件 {config['local_file']} 上传成功")
         
-        log(result_msg)
+        if has_local_dir:
+            upload_directory(minio_client, config['bucket_name'], config['local_dir'], config['remote_dir'])
+            result_msg.append(f"目录 {config['local_dir']} 上传成功（{len(dir_files)} 个文件）")
         
+        result_msg = "; ".join(result_msg)
+
     except Exception as e:
         progress_complete = True
         error_msg = f"操作失败: {str(e)}"
