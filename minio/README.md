@@ -1,12 +1,13 @@
 针对minio的操作脚本，适用于无python的Linux环境。  
-受限GitHub上传文件限制，文件`mc`需自行下载。可浏览器访问`https://dl.min.io/client/mc/release/linux-amd64/mc` 下载。也可复制命令下载。
+
+使用脚本前，应先下载`mc client`最新版本到本目录，浏览器访问`https://dl.min.io/client/mc/release/linux-amd64/mc` 下载。或执行以下命令，
 ```bash
 curl https://dl.min.io/client/mc/release/linux-amd64/mc \
   --create-dirs \
   -o $HOME/minio-binaries/mc
-  ``` 
-`init_mc.sh`,初始化mc client | 需先手动下载文件`mc`到脚本所在目录 | 可实现mc client自动配置  
-mc_login.sh | 需编辑后使用 | 用于登录minio，配置别名  
-mc_get.sh | 需编辑后使用 | 可自动拉取指定文件到当前Linux主机 | 需先完成初始化和登录  
-mc_cp.sh | 需编辑后使用 | 可拉取指定目录到当前Linux主机  
-upload_to_minio | 上传指定文件和目录到minio
+  ```
+
+`init_mc.sh`,初始化mc client，使当前环境可用命令`mc`  
+`mc_login.sh`,需编辑,用于登录minio，配置别名  
+`mc_get.sh`,需编辑,可拉取指定文件到当前Linux主机  
+`upload_to_minio`,需编辑，上传指定文件和目录到指定的minio  
