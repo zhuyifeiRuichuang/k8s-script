@@ -1,13 +1,18 @@
 #!/bin/bash
+# 脚本适用于联网环境。
 set -euo pipefail
 
 # 配置参数
+# 版本自选，必填。
 ETCD_VERSION=v3.5.9
+# 旧数据存放的目录。必填。
 ETCD_DATA_DIR=/data/etcd
 ETCD_LISTEN_URL=http://127.0.0.1:2389
+# etcd实例名字。可选。
 ETCD_NAME=temp-etcd
 TARBALL=etcd-${ETCD_VERSION}-linux-amd64.tar.gz
 PRIMARY_URL="https://github.com/etcd-io/etcd/releases/download/${ETCD_VERSION}/${TARBALL}"
+# 针对中国地区网络加速优化
 BACKUP_URL="https://ghfast.top/https://github.com/etcd-io/etcd/releases/download/${ETCD_VERSION}/${TARBALL}"
 
 # 检查是否已安装etcd
