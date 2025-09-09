@@ -1,4 +1,4 @@
-# 模板
+# 需导出的数据资源清单
 namespaces
 devopsprojects
 appprojects
