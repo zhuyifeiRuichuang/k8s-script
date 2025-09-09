@@ -290,3 +290,4 @@ done
 
 echo "所有资源导出操作已完成"
 echo "详细操作日志已保存至: $LOG_FILE"
+echo "资源已导出至目录: $out_dir"
