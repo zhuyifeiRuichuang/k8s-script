@@ -10,3 +10,5 @@ k8s集群故障，`kubectl`和`etcdctl`软件均被破坏，仅部分磁盘数�
 - 自动读取指定目录的etcd数据，针对snap和wal后缀文件。
 - 需编辑`--data-dir`,指定旧数据存放的目录。`ETCD_VERSION`指定使用的etcd版本。
 - 应在全新操作环境处理，避免影响在用的etcd环境。
+
+`export`目录。导出etcd存档数据的专用脚本。
