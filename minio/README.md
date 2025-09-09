@@ -7,7 +7,7 @@ curl https://dl.min.io/client/mc/release/linux-amd64/mc \
   -o $HOME/minio-binaries/mc
   ```
 
-`init_mc.sh`,初始化mc client，使当前环境可用命令`mc`  
+`init_mc.sh`,在当前系统初始化mc client，使当前环境可用命令`mc`  
 `mc_login.sh`,需编辑,用于登录minio，配置别名  
 `mc_get.sh`,需编辑,可拉取指定文件到当前Linux主机  
 `upload_to_minio`,需编辑，上传指定文件和目录到指定的minio  
