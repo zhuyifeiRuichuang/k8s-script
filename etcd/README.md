@@ -11,9 +11,6 @@ k8s集群故障，`kubectl`和`etcdctl`软件均被破坏，仅部分磁盘数�
 - 需编辑`--data-dir`,指定旧数据存放的目录。`ETCD_VERSION`指定使用的etcd版本。
 - 应在全新操作环境处理，避免影响在用的etcd环境。
 
-`export_etcd_resources.sh`
-- 读取`resources.txt`中的资源类型，导出资源类型下所有资源为yaml文件，存放在指定位置。可使用 `--help`查看使用方法。
-
 查询旧数据中可选的资源类型:  
 ```bash
 ETCDCTL_API=3 ./etcdctl \
