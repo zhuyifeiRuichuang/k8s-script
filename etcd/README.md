@@ -12,4 +12,4 @@ k8s集群遇到毁灭性故障，`kubectl`和`etcdctl`软件均被破坏，磁�
 - 需编辑`--data-dir`,指定旧数据存放的目录。`ETCD_VERSION`指定使用的etcd版本。
 - 应在全新操作环境处理，避免影响在用的etcd环境。
 
-`export`目录。导出etcd存档数据的专用脚本。
+`export`目录。导出etcd存档数据中指定资源。
