@@ -1,5 +1,6 @@
 说明  
-> 前置条件：应已经执行`etcd/etcd_init.sh` 完成环境初始化。
+> 前置条件：应已经执行`etcd/etcd_init.sh` 完成环境初始化。  
+> 提示：导出的数据是加密的，解密需参考：`https://github.com/etcd-io/auger`
 
 导出etcd数据文件内指定资源为yaml文件，可导入到其他k8s或etcd环境使用。  
 
