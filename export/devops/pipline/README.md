@@ -1,0 +1,1 @@
+用于导出kubesphere环境的devops的pipline数据为yaml文件，备份的数据等同于web界面看到的Jenkins流水线配置。 
