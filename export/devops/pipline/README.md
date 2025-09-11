@@ -1,1 +1,2 @@
 用于导出kubesphere环境的devops的pipline数据为yaml文件，备份的数据等同于web界面看到的Jenkins流水线配置。 
+`export.sh`将查询namespace资源，并挨个将namespace下的pipline资源导出为yaml文件，存档在脚本执行所在的目录。
