@@ -1,5 +1,5 @@
 #!/bin/bash
-# start custom domino frontend server
+# run custom domino frontend server
 
 # 定义容器名称变量
 CONTAINER_NAME="domino_frontend_dev1"
