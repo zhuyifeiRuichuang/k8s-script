@@ -8,7 +8,7 @@ NC='\033[0m' # No Color
 
 # 容器配置
 CONTAINER_NAME="domino_frontend_dev1"
-PORT_MAPPING="3001:80"
+HOST_PORT="3001"
 IMAGE_NAME="zhuyifeiruichuang/domino-frontend:dev1"
 API_URL="http://172.16.0.47:8000"
 
@@ -70,7 +70,7 @@ show_progress "创建新容器" "进行中" "$YELLOW"
 docker run -d \
   --name "$CONTAINER_NAME" \
   --restart unless-stopped \
-  -p "$PORT_MAPPING" \
+  -p "$HOST_PORT:80" \
   -e DOMINO_DEPLOY_MODE=local-compose \
   -e API_URL="$API_URL" \
   --pull always "$IMAGE_NAME" > /dev/null 2>&1
@@ -95,10 +95,10 @@ FOOTER
 
 printf "%-15s: %s\n" "容器名称" "$CONTAINER_NAME"
 printf "%-15s: %s\n" "运行状态" "$CONTAINER_STATUS"
-printf "%-15s: %s\n" "本地端口" "${PORT_MAPPING%%:*}"
+printf "%-15s: %s\n" "本地端口" "$HOST_PORT"
 printf "%-15s: %s\n" "容器IP" "$CONTAINER_IP"
 printf "%-15s: %s\n" "主机IP" "$HOST_IP"
-printf "%-15s: %s\n" "访问地址" "http://$HOST_IP:${PORT_MAPPING%%:*}"
+printf "%-15s: %s\n" "访问地址" "http://$HOST_IP:$HOST_PORT"
 
 cat << 'END'
 
