@@ -6,7 +6,7 @@ API_URL是domino-rest容器的IP和对应的物理机端口。
 IMAGE是定制容器镜像，可替换为自己定制的前端镜像。  
 HOST_PORT是前端容器的物理机端口，部署后可通过IP:端口在浏览器访问。
 ```
-`.env`是环境变量，应在domino部署前配置，放在domino部署所需目录。存在的部署命令执行时的目录。  
+`.env`是环境变量，应存放在执行domino部署命令时的目录路径。  
 重要参数说明，
 ```bash
 DOMINO_DEFAULT_PIECES_REPOSITORY_TOKEN是自己的GitHub的token。在https://github.com/settings/personal-access-tokens配置
