@@ -5,6 +5,7 @@
 CONTAINER_NAME="domino_frontend_dev1"
 API_URL="http://10.12.2.95:31"
 IMAGE="zhuyifeiruichuang/domino-frontend:dev1"
+HOSTPORT="3001"
 
 # 打印分隔线，增强可读性
 echo "=============================================="
@@ -20,7 +21,7 @@ echo "✅ 旧容器 [$CONTAINER_NAME] 已删除"
 docker run -d \
   --name $CONTAINER_NAME \
   --restart unless-stopped \
-  -p 3001:80 \
+  -p $HOSTPORT:80 \
   -e DOMINO_DEPLOY_MODE=local-compose \
   -e API_URL=$API_URL \
   --pull always $IMAGE > /dev/null 2>&1
