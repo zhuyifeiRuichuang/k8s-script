@@ -3,6 +3,8 @@
 
 # 定义容器名称变量
 CONTAINER_NAME="domino_frontend_dev1"
+API_URL="http://10.12.2.95:31"
+IMAGE="zhuyifeiruichuang/domino-frontend:dev1"
 
 # 打印分隔线，增强可读性
 echo "=============================================="
@@ -20,8 +22,8 @@ docker run -d \
   --restart unless-stopped \
   -p 3001:80 \
   -e DOMINO_DEPLOY_MODE=local-compose \
-  -e API_URL=http://10.12.2.95:31 \
-  --pull always zhuyifeiruichuang/domino-frontend:dev1 > /dev/null 2>&1
+  -e API_URL=$API_URL \
+  --pull always $IMAGE > /dev/null 2>&1
 
 # 提示新容器已启动
 echo "🚀 新容器 [$CONTAINER_NAME] 已启动"
