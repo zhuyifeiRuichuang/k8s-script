@@ -1,7 +1,7 @@
 #!/bin/bash
 # run custom domino frontend server
 
-# 定义容器名称变量
+# 容器配置
 CONTAINER_NAME="domino_frontend_dev1"
 API_URL="http://10.12.2.95:31"
 IMAGE="zhuyifeiruichuang/domino-frontend:dev1"
