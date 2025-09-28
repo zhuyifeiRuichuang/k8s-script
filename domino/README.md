@@ -1,4 +1,4 @@
-`start_frontend_dev1.sh`是duomino的前端启动脚本，用于解决云平台环境部署domino出现network erro的问题。  
+`start_frontend_dev*.sh`是duomino的前端启动脚本，用于解决云平台环境部署domino出现network erro的问题。  
 执行脚本之前，应修改容器配置部分。配置说明如下，  
 ```bash
 CONTAINER_NAME是容器的名字，需当前环境全局唯一。  
