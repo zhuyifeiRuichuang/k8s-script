@@ -1,4 +1,6 @@
 存档记录kubeSphere部署时使用的配置文件。  
+offline目录存放离线部署文件。  
+online存放联网部署文件。  
 单节点稳定运行，最少功能最小规格4C8G+200GB。全量功能最小规格8C16G+500GB  
 `deploy_v1.yaml`,最小化功能部署,1master+2work  
 `deploy_v2.yaml`,全量功能部署,3master+2work  
