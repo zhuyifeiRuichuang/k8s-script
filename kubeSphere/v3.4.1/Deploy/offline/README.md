@@ -2,14 +2,14 @@
 # 说明：将部署所需文件放入本目录，上传至集群主节点使用。
 # 需注意，全量部署，单个节点最低配置是8C16G500GB，至少3个节点，奇数的master节点，任意的work节点。
 
-每次部署务必更新此处的文件。
-kubekey-v3.1.11-linux-amd64.tar.gz | 部署集群所需工具
-deploy.yaml | 部署集群软件所需配置文件 | 
-ks341offline_v5.tar.gz | 用于部署的离线制品 | 可用 | 最新
-init_harbor_v3.sh | 初始化离线集群自有的harbor仓库 | 可用 | 最新
-init_autoCli.sh | 配置kubectl命令自动补齐功能 | 可用
-deploy-offline-v1.tar | 离线部署资源打包 | 可用 | 部署过程中故障较多 | 部署成功后故障最少
-deploy-offline-v2.tar | 离线部署资源打包 | 可用 | 部署过程中故障最少 | 部署成功后偶发POD故障
+每次部署务必更新此处的文件。  
+kubekey-v3.1.11-linux-amd64.tar.gz | 部署集群所需工具  
+deploy.yaml | 部署集群软件所需配置文件 |   
+ks341offline_v5.tar.gz | 用于部署的离线制品 | 可用 | 最新  
+init_harbor_v3.sh | 初始化离线集群自有的harbor仓库 | 可用 | 最新  
+init_autoCli.sh | 配置kubectl命令自动补齐功能 | 可用  
+deploy-offline-v1.tar | 离线部署资源打包 | 可用 | 部署过程中故障较多 | 部署成功后故障最少  
+deploy-offline-v2.tar | 离线部署资源打包 | 可用 | 部署过程中故障最少 | 部署成功后偶发POD故障    
 完整配置文件参考`https://github.com/kubesphere/kubekey/blob/master/docs/manifest-example.md`
 
 # 常用命令
