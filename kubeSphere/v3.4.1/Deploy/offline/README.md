@@ -10,6 +10,7 @@ init_harbor_v3.sh | 初始化离线集群自有的harbor仓库 | 可用 | 最新
 init_autoCli.sh | 配置kubectl命令自动补齐功能 | 可用
 deploy-offline-v1.tar | 离线部署资源打包 | 可用 | 部署过程中故障较多 | 部署成功后故障最少
 deploy-offline-v2.tar | 离线部署资源打包 | 可用 | 部署过程中故障最少 | 部署成功后偶发POD故障
+完整配置文件参考`https://github.com/kubesphere/kubekey/blob/master/docs/manifest-example.md`
 
 # 常用命令
 按顺序执行可完成软件部署。
