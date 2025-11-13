@@ -4,7 +4,7 @@
 # 可自定义变量（根据需求修改）
 # ==============================================
 BASE_IMAGE="ubuntu:24.04"       # 基础镜像
-LOCAL_PROJECT_DIR="./file-online-preview-master" # 本地项目目录（例如修改为./myproject，替换原来的./aaa）
+LOCAL_PROJECT_DIR="./file-online-preview-master"
 LOCAL_JAR_DEST="./"             # 本地存放jar的目录
 JDK_PACKAGE="openjdk-21-jdk"    # JDK安装包名
 MAVEN_VERSION="3.9.11"          # Maven版本
