@@ -1,1 +1,1 @@
-RHEL,centos,oracle linux ,rocky linux
+RHEL,centos,oracle linux ,rocky linux,centos
