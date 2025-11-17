@@ -13,8 +13,6 @@ CONTAINER_NAME="build-java-code"  # 临时容器名称
 
 # 自动计算容器内挂载目录
 CONTAINER_PROJECT_DIR="/$(basename "$LOCAL_PROJECT_DIR")"
-# 本地target目录路径（用于验证）
-LOCAL_TARGET_DIR="${LOCAL_PROJECT_DIR}/target"
 # 临时日志文件（存储命令错误信息）
 ERROR_LOG=$(mktemp)
 
@@ -83,12 +81,39 @@ if ! docker exec "$CONTAINER_NAME" bash -c "
 fi
 
 
-# 步骤5：验证编译结果
+# 步骤5：验证编译结果（优化部分）
 echo "[5/6] 验证编译结果..."
-if [ ! -d "$LOCAL_TARGET_DIR" ] || [ -z "$(ls -A "$LOCAL_TARGET_DIR" 2> /dev/null)" ]; then
-    echo "错误：本地项目目录中未生成target目录，编译可能未成功"
+# 递归查找项目目录下所有名为target的目录（排除权限错误）
+TARGET_DIRS=$(find "$LOCAL_PROJECT_DIR" -type d -name "target" 2>/dev/null)
+
+# 检查是否存在任何target目录
+if [ -z "$TARGET_DIRS" ]; then
+    echo "错误：项目目录下未找到任何target目录，编译可能未成功"
     exit 1
 fi
+
+# 检查是否存在非空的target目录
+found_non_empty=0
+while IFS= read -r dir; do
+    # 检查目录是否非空（忽略隐藏文件的错误输出）
+    if [ -n "$(ls -A "$dir" 2>/dev/null)" ]; then
+        found_non_empty=1
+        break  # 找到一个非空目录即可退出循环
+    fi
+done <<< "$TARGET_DIRS"
+
+if [ "$found_non_empty" -eq 0 ]; then
+    echo "错误：找到的所有target目录均为空，编译可能未成功"
+    exit 1
+fi
+
+# 输出找到的非空target目录（可选，方便用户查看）
+echo "找到有效编译结果目录："
+while IFS= read -r dir; do
+    if [ -n "$(ls -A "$dir" 2>/dev/null)" ]; then
+        echo "  - $dir"
+    fi
+done <<< "$TARGET_DIRS"
 
 
 # 步骤6：清理容器
@@ -96,4 +121,4 @@ echo "[6/6] 清理临时容器..."
 # 容器会被trap中的cleanup自动删除，此处仅提示
 
 
-echo "操作完成！编译结果已保存至：$LOCAL_TARGET_DIR"
+echo "操作完成！编译结果已保存至上述target目录"
