@@ -5,14 +5,14 @@ set -euo pipefail  # 严格模式，确保命令失败时脚本终止并捕获�
 # 可自定义变量
 # ==============================================
 BASE_IMAGE="ubuntu:24.04"         # 基础镜像
-LOCAL_PROJECT_DIR="./kkfile"      # 本地项目目录
+LOCAL_PROJECT_DIR="./"            # 本地项目目录
 JDK_PACKAGE="openjdk-21-jdk"      # JDK包名
 MAVEN_VERSION="3.9.11"            # Maven版本
 CONTAINER_NAME="build-java-code"  # 临时容器名称
 # ==============================================
 
-# 自动计算容器内挂载目录
-CONTAINER_PROJECT_DIR="/$(basename "$LOCAL_PROJECT_DIR")"
+# 容器内固定挂载目录（非根目录，彻底避免挂载到/的错误）
+CONTAINER_PROJECT_DIR="/app"
 # 临时日志文件（存储命令错误信息）
 ERROR_LOG=$(mktemp)
 
@@ -48,8 +48,8 @@ if ! docker pull "$BASE_IMAGE" &> "$ERROR_LOG"; then
 fi
 
 
-# 步骤3：启动容器并挂载目录
-echo "[3/6] 启动临时容器并挂载项目目录..."
+# 步骤3：启动容器并挂载目录（使用固定的/app目录，无根目录挂载风险）
+echo "[3/6] 启动临时容器并挂载项目目录（本地:$LOCAL_PROJECT_DIR -> 容器:$CONTAINER_PROJECT_DIR）..."
 if ! docker run -d --rm --name "$CONTAINER_NAME" \
     -v "$LOCAL_PROJECT_DIR:$CONTAINER_PROJECT_DIR" \
     "$BASE_IMAGE" sleep infinity &> "$ERROR_LOG"; then
@@ -60,7 +60,7 @@ if ! docker run -d --rm --name "$CONTAINER_NAME" \
 fi
 
 
-# 步骤4：在容器内安装依赖和编译
+# 步骤4：在容器内安装依赖和编译（cd到固定的/app目录）
 echo "[4/6] 安装依赖并编译项目..."
 # 容器内命令：重定向输出到日志，仅保留错误码
 if ! docker exec "$CONTAINER_NAME" bash -c "
