@@ -1,1 +1,2 @@
-使用docker构建hadoop容器镜像，可对任意版本Hadoop代码进行打包
+使用docker构建hadoop容器镜像，可对任意版本Hadoop代码进行打包  
+推荐使用最新版本的docker
