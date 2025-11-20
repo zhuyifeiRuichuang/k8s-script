@@ -4,3 +4,4 @@
 ```bash
 docker build -t apache/hadoop:3.1.1 .
 ```
+`log4j.properties`使kubectl logs 可以直接查看到组件日志。非必须。
