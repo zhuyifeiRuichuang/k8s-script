@@ -5,11 +5,12 @@
 
 # 快捷部署
 先修改hadoop.yaml，
-namespace bigdata2应改为全新namespace，避免排错时误删现有资源。
+namespace bigdata2应改为全新namespace，避免排错时误删现有资源。  
 nodePort 部分必须配置全集群唯一的端口。
+image可改为自己定制的。
 后执行部署命令，
-kubectl apply -f hadoop.yaml
-已配置数据持久化。
+`kubectl apply -f hadoop.yaml`  
+已配置数据持久化到pvc，只要PVC和PV还在，数据就在，POD随便删改。
 
 # 查询pod，仅供参考
 ```bash
@@ -33,8 +34,8 @@ nodemanager       NodePort   10.233.4.44     <none>        8042:30074/TCP,8040:3
 resourcemanager   NodePort   10.233.61.168   <none>        8088:30072/TCP,8030:30073/TCP,8031:30079/TCP,8032:31273/TCP   19m
 ```
 
-# 浏览器访问测试
-http://10.106.9.87:30070/
-http://10.106.9.87:30072/
-http://10.106.9.87:30074/
-http://10.106.9.87:30075/
+# 浏览器访问测试 主机IP和映射后的端口
+http://10.106.9.87:30070/  
+http://10.106.9.87:30072/  
+http://10.106.9.87:30074/  
+http://10.106.9.87:30075/  
