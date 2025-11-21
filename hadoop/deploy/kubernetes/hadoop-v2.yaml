@@ -725,17 +725,17 @@ spec:
         - name: nodemanager-logs
           mountPath: /tmp/hadoop-logs
         livenessProbe:
-          exec:
-            command: ["yarn", "node", "-status", "$(hostname)"]
-          initialDelaySeconds: 180
-          periodSeconds: 15
-          timeoutSeconds: 5
+          tcpSocket:
+            port: 8040
+          initialDelaySeconds: 240
+          periodSeconds: 20
         readinessProbe:
-          exec:
-            command: ["yarn", "node", "-status", "$(hostname)"]  # 检测NodeManager是否注册到ResourceManager
-          initialDelaySeconds: 120
-          periodSeconds: 10
-          timeoutSeconds: 5
+          tcpSocket:  # 直接检测8042端口（Web服务端口），通即就绪
+            port: 8042
+          initialDelaySeconds: 30  # 启动后30秒开始检测（足够Web服务启动）
+          periodSeconds: 5         # 每5秒检测一次
+          timeoutSeconds: 3        # 超时3秒
+          successThreshold: 1      # 1次成功即标记就绪
       volumes:
       - name: hadoop-config
         configMap:
