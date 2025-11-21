@@ -16,6 +16,7 @@ deployment
 v1,单实例。mysql:5.7.44  
 statefulset  
 v2,单实例。mysql:8.0  
+v3,主从架构，1主2从，读写分离，mysql:9.5.0
 # 快速部署
 在k8s集群内快速部署MySQL
 ```bash
