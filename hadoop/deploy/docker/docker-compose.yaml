@@ -41,7 +41,6 @@ services:
     env_file:
       - ./config
     volumes:
-      - ./test.sh:/opt/test.sh
       - resourcemanager_data:/tmp/hadoop-hadoop/yarn/data
 
   nodemanager:
