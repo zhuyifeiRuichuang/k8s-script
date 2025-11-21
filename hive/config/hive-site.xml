@@ -14,7 +14,7 @@
   </property>
   <property>
     <name>javax.jdo.option.ConnectionPassword</name>
-    <value>Ruichuang@123</value>
+    <value>Root@123</value>
   </property>
   <property>
     <name>hive.metastore.uris</name>
@@ -61,4 +61,29 @@
    <name>hive.execution.engine</name>
    <value>mr</value>
  </property>
+ <property>
+    <name>hive.server2.thrift.bind.host</name>
+    <value>localhost</value>
+    <description>Bind host on which to run the HiveServer2 Thrift service.</description>
+</property>
+<property>
+    <name>hive.server2.thrift.port</name>
+    <value>10000</value>
+    <description>Port number of HiveServer2 Thrift interface when hive.server2.transport.mode is 'binary'.</description>
+</property>
+<property>
+    <name>hive.server2.thrift.http.port</name>
+    <value>10001</value>
+    <description>Port number of HiveServer2 Thrift interface when hive.server2.transport.mode is 'http'.</description>
+</property>
+<property>
+    <name>hive.server2.thrift.client.user</name>
+    <value>hdoop</value>
+    <description>Username to use against thrift client</description>
+</property>
+<property>
+    <name>hive.server2.thrift.client.password</name>
+    <value>hdoop</value>
+    <description>Password to use against thrift client</description>
+</property>
 </configuration>
