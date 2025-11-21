@@ -1,18 +1,18 @@
 <configuration>
-	<property>
+  <property>
     <name>dfs.namenode.name.dir</name>
     <value>/opt/hadoop/dfsdata/namenode</value>
-</property>
-<property>
+  </property>
+  <property>
     <name>dfs.datanode.data.dir</name>
     <value>/opt/hadoop/dfsdata/datanode</value>
-</property>
-<property>
+  </property>
+  <property>
     <name>dfs.replication</name>
     <value>1</value>
-</property>
-<property>
+  </property>
+  <property>
     <name>dfs.permissions.enabled</name>
     <value>false</value>
-</property>
+  </property>
 </configuration>
