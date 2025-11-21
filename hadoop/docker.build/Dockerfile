@@ -14,5 +14,3 @@ WORKDIR /opt/hadoop
 ADD log4j.properties /opt/hadoop/etc/hadoop/log4j.properties
 RUN sudo chown -R hadoop:users /opt/hadoop/etc/hadoop/*
 ENV HADOOP_CONF_DIR=/opt/hadoop/etc/hadoop
-RUN mkdir -p /opt/hadoop/data
-RUN chown -R hadoop:hadoop /opt/hadoop/data
