@@ -41,3 +41,18 @@ docker compose down
 ```bash
 docker compose down -v
 ```
+
+# compose-v2说明
+若使用此yaml，需先做环境初始化。  
+```bash
+# 在当前目录操作
+# 创建目录
+mkdir -p data/namenode
+mkdir -p data/datanode
+
+# 放宽权限（或者你可以将所有者改为容器内的 hadoop 用户 ID，通常是 1000）
+chmod 777 data/namenode
+chmod 777 data/datanode
+```
+
+# 数据持久化测试
