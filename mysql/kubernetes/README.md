@@ -18,6 +18,7 @@ kubectl apply -f mysql.yaml
 bash checkInternal.sh
 ```
 ## 数据持久化测试
+仅供参考
 ```bash
 # 查询pod名字
 kubectl get pod -n bigdata2 
