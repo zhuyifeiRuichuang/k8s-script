@@ -32,3 +32,12 @@ docker compose up -d --scale datanode=3
 ```bash
 docker compose ps -a
 ```
+
+# 清空测试环境，不清除持久化数据
+```bash
+docker compose down
+```
+# 完整清空测试环境所有数据
+```bash
+docker compose down -v
+```
