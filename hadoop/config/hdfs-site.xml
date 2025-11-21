@@ -1,26 +1,26 @@
 <configuration>
-<property>
-    <name>dfs.data.dir</name>
-    <value>/opt/hadoop-3.1.1/dfsdata/namenode</value>
-</property>
-<property>
-    <name>dfs.data.dir</name>
-    <value>/opt/hadoop-3.1.1/dfsdata/datanode</value>
-</property>
-<property>
-    <name>dfs.replication</name>
-    <value>1</value>
-</property>
-<property>
-    <name>dfs.permissions</name>
-    <value>false</value>
-</property>
-<property>
-     <name>dfs.webhdfs.enabled</name>
-     <value>true</value>
-</property>
-<property>
-  <name>dfs.namenode.rpc-address</name>
-  <value>0.0.0.0:9000</value>
-</property>
+    <property>
+        <name>dfs.data.dir</name>
+        <value>/opt/hadoop-3.1.1/dfsdata/namenode</value>
+    </property>
+    <property>
+        <name>dfs.data.dir</name>
+        <value>/opt/hadoop-3.1.1/dfsdata/datanode</value>
+    </property>
+    <property>
+        <name>dfs.replication</name>
+        <value>1</value>
+    </property>
+    <property>
+        <name>dfs.permissions</name>
+        <value>false</value>
+    </property>
+    <property>
+        <name>dfs.webhdfs.enabled</name>
+        <value>true</value>
+    </property>
+    <property>
+        <name>dfs.namenode.rpc-address</name>
+        <value>0.0.0.0:9000</value>
+    </property>
 </configuration>
