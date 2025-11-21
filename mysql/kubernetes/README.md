@@ -3,13 +3,11 @@
 ## yaml版本说明
 v1, deployment方式部署，可数据持久化。MySQL单实例。
 # 快速部署
-（kubernetes）
 在k8s集群内快速部署MySQL
 ```bash
 kubectl apply -f mysql.yaml
 ```
 # 访问测试
-（kubernetes）
 测试在k8s环境，集群内访问MySQL。
 ```bash
 bash checkInternal.sh
