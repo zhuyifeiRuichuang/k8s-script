@@ -3,44 +3,62 @@ services:
     build: .
     image: hadoop-namenode:${HADOOP_TAG}
     hostname: namenode
+    container_name: namenode
+    restart: always
     command: ["hdfs", "namenode"]
     ports:
-      - 9870:9870
+      - "9870:9870"
+      - "9000:9000"
     env_file:
       - ./config
     environment:
-      ENSURE_NAMENODE_DIR: "/tmp/hadoop/data/namenode"
+      ENSURE_NAMENODE_DIR: "/tmp/hadoop-hadoop/dfs/name"
     volumes:
-      - /tmp/hadoop/data/namenode
+      - namenode_data:/tmp/hadoop-hadoop/dfs/name
 
   datanode:
     build: .
     image: hadoop-datanode:${HADOOP_TAG}
+    restart: always
     command: ["hdfs", "datanode"]
     env_file:
       - ./config
+    ports:
+      - "9860-9864:9864"
+      - "9866-9869:9866"
     volumes:
-      - /tmp/hadoop/data/datanode
+      - /tmp/hadoop-hadoop/dfs/data
 
   resourcemanager:
     build: .
     image: hadoop-resourcemanager:${HADOOP_TAG}
     hostname: resourcemanager
+    container_name: resourcemanager
+    restart: always
     command: ["yarn", "resourcemanager"]
     ports:
-      - 8088:8088
+      - "8088:8088"
     env_file:
       - ./config
     volumes:
       - ./test.sh:/opt/test.sh
-      - /tmp/hadoop-hadoop/yarn/rm
+      # 对应 Yarn 的默认路径
+      - resourcemanager_data:/tmp/hadoop-hadoop/yarn/data
 
   nodemanager:
     build: .
     hostname: nodemanager
     image: hadoop-nodemanager:${HADOOP_TAG}
+    restart: always
     command: ["yarn", "nodemanager"]
+    ports:
+      - "8042:8042"
     env_file:
       - ./config
     volumes:
-      - /tmp/hadoop-hadoop/yarn/nm
+      - /tmp/hadoop-hadoop/yarn/local
+      - /tmp/hadoop-hadoop/yarn/logs
+
+volumes:
+  namenode_data:
+  resourcemanager_data:
