@@ -1,62 +1,34 @@
 services:
-  namenode:
-    build: .
-    image: hadoop-namenode:${HADOOP_TAG}
-    hostname: namenode
-    container_name: namenode
-    restart: always
-    command: ["hdfs", "namenode"]
-    ports:
-      - "9870:9870"
-      - "9000:9000"
-    env_file:
-      - ./config
-    environment:
-      ENSURE_NAMENODE_DIR: "/tmp/hadoop-hadoop/dfs/name"
-    volumes:
-      - namenode_data:/tmp/hadoop-hadoop/dfs/name
-
-  datanode:
-    build: .
-    image: hadoop-datanode:${HADOOP_TAG}
-    restart: always
-    command: ["hdfs", "datanode"]
-    env_file:
-      - ./config
-    ports:
-      - "9860-9864:9864"
-      - "9866-9869:9866"
-    volumes:
-      - /tmp/hadoop-hadoop/dfs/data
-
-  resourcemanager:
-    build: .
-    image: hadoop-resourcemanager:${HADOOP_TAG}
-    hostname: resourcemanager
-    container_name: resourcemanager
-    restart: always
-    command: ["yarn", "resourcemanager"]
-    ports:
-      - "8088:8088"
-    env_file:
-      - ./config
-    volumes:
-      - resourcemanager_data:/tmp/hadoop-hadoop/yarn/data
-
-  nodemanager:
-    build: .
-    hostname: nodemanager
-    image: hadoop-nodemanager:${HADOOP_TAG}
-    restart: always
-    command: ["yarn", "nodemanager"]
-    ports:
-      - "8042:8042"
-    env_file:
-      - ./config
-    volumes:
-      - /tmp/hadoop-hadoop/yarn/local
-      - /tmp/hadoop-hadoop/yarn/logs
-
-volumes:
-  namenode_data:
-  resourcemanager_data:
+   namenode:
+      build: .
+      image: hadoop-namenode:${HADOOP_TAG}
+      hostname: namenode
+      command: ["hdfs", "namenode"]
+      ports:
+        - 9870:9870
+      env_file:
+        - ./config
+      environment:
+          ENSURE_NAMENODE_DIR: "/tmp/hadoop-root/dfs/name"
+   datanode:
+      build: .
+      image: hadoop-datanode:${HADOOP_TAG}
+      command: ["hdfs", "datanode"]
+      env_file:
+        - ./config
+   resourcemanager:
+      build: .
+      image: hadoop-resourcemanager:${HADOOP_TAG}
+      hostname: resourcemanager
+      command: ["yarn", "resourcemanager"]
+      ports:
+         - 8088:8088
+      env_file:
+        - ./config
+   nodemanager:
+      build: .
+      hostname: nodemanager
+      image: hadoop-nodemanager:${HADOOP_TAG}
+      command: ["yarn", "nodemanager"]
+      env_file:
+        - ./config
