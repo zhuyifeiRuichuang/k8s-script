@@ -1,7 +1,7 @@
 # 说明
 在kubernetes环境部署和测试MySQL任意版本。
 # deploy （kubernetes）
-用于在k8s环境部署MySQL任意版本非集群架构，当前案例展示mysql:5.7.44，根据需求替换image部分即可。
+用于在k8s环境部署MySQL任意版本非集群架构，当前案例展示mysql:5.7.44，根据需求替换image部分可部署不同版本MySQL。
 ```bash
 kubectl apply -f mysql.yaml
 ```
