@@ -1,36 +1,51 @@
 services:
-   namenode:
-      build: .
-      image: hadoop-namenode:${HADOOP_TAG}
-      hostname: namenode
-      command: ["hdfs", "namenode"]
-      ports:
-        - 9870:9870
-      env_file:
-        - ./config
-      environment:
-          ENSURE_NAMENODE_DIR: "/tmp/hadoop-root/dfs/name"
-   datanode:
-      build: .
-      image: hadoop-datanode:${HADOOP_TAG}
-      command: ["hdfs", "datanode"]
-      env_file:
-        - ./config
-   resourcemanager:
-      build: .
-      image: hadoop-resourcemanager:${HADOOP_TAG}
-      hostname: resourcemanager
-      command: ["yarn", "resourcemanager"]
-      ports:
-         - 8088:8088
-      env_file:
-        - ./config
-      volumes:
-        - ./test.sh:/opt/test.sh
-   nodemanager:
-      build: .
-      hostname: nodemanager
-      image: hadoop-nodemanager:${HADOOP_TAG}
-      command: ["yarn", "nodemanager"]
-      env_file:
-        - ./config
+  namenode:
+    build: .
+    image: hadoop-namenode:${HADOOP_TAG}
+    hostname: namenode
+    command: ["hdfs", "namenode"]
+    ports:
+      - 9870:9870
+    env_file:
+      - ./config
+    environment:
+      ENSURE_NAMENODE_DIR: "/tmp/hadoop-root/dfs/name"
+    volumes:
+      - hadoop-namenode-data:/tmp/hadoop-root/dfs/name
+
+  datanode:
+    build: .
+    image: hadoop-datanode:${HADOOP_TAG}
+    command: ["hdfs", "datanode"]
+    env_file:
+      - ./config
+    volumes:
+      - /tmp/hadoop-root/dfs/data
+
+  resourcemanager:
+    build: .
+    image: hadoop-resourcemanager:${HADOOP_TAG}
+    hostname: resourcemanager
+    command: ["yarn", "resourcemanager"]
+    ports:
+      - 8088:8088
+    env_file:
+      - ./config
+    volumes:
+      - ./test.sh:/opt/test.sh
+      - hadoop-resourcemanager-data:/tmp/hadoop-root/yarn/rm
+
+  nodemanager:
+    build: .
+    hostname: nodemanager
+    image: hadoop-nodemanager:${HADOOP_TAG}
+    command: ["yarn", "nodemanager"]
+    env_file:
+      - ./config
+    volumes:
+      - hadoop-nodemanager-data:/tmp/hadoop-root/yarn/nm
+
+volumes:
+  hadoop-namenode-data:
+  hadoop-resourcemanager-data:
+  hadoop-nodemanager-data:
