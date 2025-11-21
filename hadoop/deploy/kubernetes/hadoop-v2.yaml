@@ -261,7 +261,7 @@ spec:
               hdfs namenode -format -force -nonInteractive || { echo "格式化失败"; exit 1; }
             fi
             echo "=== 启动Namenode ==="
-            hdfs namenode -Ddfs.namenode.rpc-bind-host=0.0.0.0 -Ddfs.namenode.http-bind-host=0.0.0.0
+            hdfs namenode
         ports:
         - containerPort: 9870
         - containerPort: 8020
@@ -402,7 +402,7 @@ spec:
             mkdir -p /tmp/hadoop-root/dfs/data
             chmod -R 777 /tmp/hadoop-root/
             echo "=== 启动Datanode ==="
-            hdfs datanode -Ddfs.datanode.address=0.0.0.0:9867 -Ddfs.datanode.http.address=0.0.0.0:9864
+            hdfs datanode
         ports:
         - containerPort: 9864
         - containerPort: 9866
@@ -537,7 +537,7 @@ spec:
             mkdir -p /tmp/hadoop-yarn
             chmod -R 777 /tmp/hadoop-yarn
             echo "=== 启动ResourceManager ==="
-            yarn resourcemanager -Dyarn.resourcemanager.address=0.0.0.0:8032 -Dyarn.resourcemanager.webapp.address=0.0.0.0:8088
+            yarn resourcemanager
         ports:
         - containerPort: 8088
         - containerPort: 8030
@@ -686,7 +686,7 @@ spec:
             mkdir -p /tmp/hadoop-yarn-nm
             chmod -R 777 /tmp/hadoop-yarn-nm
             echo "=== 启动NodeManager ==="
-            yarn nodemanager -Dyarn.nodemanager.address=0.0.0.0:8040 -Dyarn.nodemanager.webapp.address=0.0.0.0:8042
+            yarn nodemanager
         ports:
         - containerPort: 8042
         - containerPort: 8040
