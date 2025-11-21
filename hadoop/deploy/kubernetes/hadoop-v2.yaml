@@ -1,10 +1,10 @@
-# 命名空间
+# 命名空间（不变）
 apiVersion: v1
 kind: Namespace
 metadata:
   name: bigdata2
 ---
-# Hadoop XML配置ConfigMap
+# Hadoop XML配置ConfigMap（修改dfs.replication为3，适配3个DataNode）
 apiVersion: v1
 kind: ConfigMap
 metadata:
@@ -23,7 +23,6 @@ data:
         <value>hdfs://namenode:8020</value>
       </property>
     </configuration>
-
   hdfs-site.xml: |
     <?xml version="1.0" encoding="UTF-8"?>
     <configuration>
@@ -33,7 +32,7 @@ data:
       </property>
       <property>
         <name>dfs.replication</name>
-        <value>1</value>
+        <value>3</value> <!-- 副本数=DataNode数量，可根据实际调整 -->
       </property>
       <property>
         <name>dfs.namenode.name.dir</name>
@@ -47,8 +46,15 @@ data:
         <name>dfs.permissions.enabled</name>
         <value>false</value>
       </property>
+      <property>
+        <name>dfs.client.use.datanode.hostname</name>
+        <value>true</value> <!-- 允许通过Pod名称访问DataNode -->
+      </property>
+      <property>
+        <name>dfs.datanode.use.datanode.hostname</name>
+        <value>true</value> <!-- DataNode之间通过主机名通信 -->
+      </property>
     </configuration>
-
   mapred-site.xml: |
     <?xml version="1.0" encoding="UTF-8"?>
     <configuration>
@@ -69,7 +75,6 @@ data:
         <value>HADOOP_MAPRED_HOME=/opt/hadoop</value>
       </property>
     </configuration>
-
   yarn-site.xml: |
     <?xml version="1.0" encoding="UTF-8"?>
     <configuration>
@@ -98,7 +103,6 @@ data:
         <value>resourcemanager:8032</value>
       </property>
     </configuration>
-
   capacity-scheduler.xml: |
     <?xml version="1.0" encoding="UTF-8"?>
     <configuration>
@@ -170,23 +174,11 @@ data:
     echo "HDFS Status: $(hdfs dfsadmin -report | grep 'DFS Used%')"
     echo "YARN Status: $(yarn node -list)"
 ---
-# PVC配置（不变）
+# PVC配置（删除原有datanode-pvc，改为StatefulSet的PVC模板）
 apiVersion: v1
 kind: PersistentVolumeClaim
 metadata:
   name: namenode-pvc
-  namespace: bigdata2
-spec:
-  accessModes: [ "ReadWriteOnce" ]
-  storageClassName: "local"
-  resources:
-    requests:
-      storage: 10Gi
----
-apiVersion: v1
-kind: PersistentVolumeClaim
-metadata:
-  name: datanode-pvc
   namespace: bigdata2
 spec:
   accessModes: [ "ReadWriteOnce" ]
@@ -219,7 +211,7 @@ spec:
     requests:
       storage: 10Gi
 ---
-# 1. Namenode Deployment + Service
+# 1. Namenode Deployment + Service（不变）
 apiVersion: apps/v1
 kind: Deployment
 metadata:
@@ -300,22 +292,20 @@ spec:
           mountPath: /tmp/hadoop-root
         - name: namenode-logs
           mountPath: /tmp/hadoop-logs
-        # 优化存活探针：延长初始延迟，避免误杀
         livenessProbe:
           exec:
-            command: ["hdfs", "dfsadmin", "-report"]  # 执行实际的服务状态命令
-          initialDelaySeconds: 180  # 3分钟后开始检测（适配格式化+启动）
+            command: ["hdfs", "dfsadmin", "-report"]
+          initialDelaySeconds: 180
           periodSeconds: 15
           timeoutSeconds: 5
-          failureThreshold: 3  # 连续3次失败才判定为存活失败
-        # 优化就绪探针：用服务命令检测，而非仅端口
+          failureThreshold: 3
         readinessProbe:
           exec:
-            command: ["hdfs", "dfsadmin", "-safemode", "get"]  # 检测Namenode是否退出安全模式
-          initialDelaySeconds: 120  # 2分钟后开始检测
+            command: ["hdfs", "dfsadmin", "-safemode", "get"]
+          initialDelaySeconds: 120
           periodSeconds: 10
           timeoutSeconds: 5
-          successThreshold: 1  # 1次成功即判定为就绪
+          successThreshold: 1
       volumes:
       - name: hadoop-config
         configMap:
@@ -351,9 +341,32 @@ spec:
     targetPort: 9868
     nodePort: 30076
 ---
-# 2. Datanode Deployment + Service
+# 2. DataNode StatefulSet + Headless Service（核心修改）
+# Headless Service（无集群IP，通过DNS解析Pod名称）
+apiVersion: v1
+kind: Service
+metadata:
+  name: datanode-headless
+  namespace: bigdata2
+spec:
+  clusterIP: None # Headless服务，不分配ClusterIP
+  selector:
+    app: hadoop
+    component: datanode
+  ports:
+  - name: webui
+    port: 9864
+    targetPort: 9864
+  - name: data-transfer
+    port: 9866
+    targetPort: 9866
+  - name: ipc
+    port: 9867
+    targetPort: 9867
+---
+# DataNode StatefulSet（支持多副本，自动创建PVC）
 apiVersion: apps/v1
-kind: Deployment
+kind: StatefulSet
 metadata:
   name: datanode
   namespace: bigdata2
@@ -361,16 +374,12 @@ metadata:
     app: hadoop
     component: datanode
 spec:
-  replicas: 1
+  serviceName: datanode-headless # 关联Headless Service
+  replicas: 3 # 初始3个DataNode，可灵活调整
   selector:
     matchLabels:
       app: hadoop
       component: datanode
-  strategy:
-    type: RollingUpdate
-    rollingUpdate:
-      maxSurge: 1
-      maxUnavailable: 0
   template:
     metadata:
       labels:
@@ -387,7 +396,8 @@ spec:
         args:
           - |
             set -e
-            for i in {1..60}; do  # 延长等待Namenode的时间到10分钟
+            # 等待Namenode就绪（延长超时时间到10分钟）
+            for i in {1..60}; do
               if nc -z namenode 8020; then
                 echo "Namenode已就绪！"
                 break
@@ -399,9 +409,11 @@ spec:
               echo "Namenode未就绪，等待10秒..."
               sleep 10
             done
+            # 创建数据目录（每个Pod独立目录，无冲突）
             mkdir -p /tmp/hadoop-root/dfs/data
             chmod -R 777 /tmp/hadoop-root/
-            echo "=== 启动Datanode ==="
+            # 启动DataNode（自动注册到Namenode）
+            echo "=== 启动DataNode（Pod名称：$(hostname)） ==="
             hdfs datanode
         ports:
         - containerPort: 9864
@@ -415,7 +427,7 @@ spec:
           - name: HADOOP_LOG_DIR
             value: /tmp/hadoop-logs
           - name: HADOOP_OPTS
-            value: "-Djava.net.preferIPv4Stack=true"
+            value: "-Djava.net.preferIPv4Stack=true -Ddfs.datanode.hostname=$(hostname)" # 绑定Pod名称
         volumeMounts:
         - name: hadoop-config
           mountPath: /opt/hadoop/etc/hadoop/core-site.xml
@@ -449,45 +461,22 @@ spec:
           timeoutSeconds: 5
         readinessProbe:
           exec:
-            command: ["hdfs", "dfsadmin", "-report"]  # 检测Datanode是否已注册到Namenode
+            command: ["hdfs", "dfsadmin", "-report | grep -q $(hostname)"] # 检测当前Pod是否注册成功
           initialDelaySeconds: 120
           periodSeconds: 10
           timeoutSeconds: 5
-      volumes:
-      - name: hadoop-config
-        configMap:
-          name: hadoop-config
-          defaultMode: 0755
-      - name: datanode-data
-        persistentVolumeClaim:
-          claimName: datanode-pvc
-      - name: datanode-logs
-        emptyDir: {}
+  # PVC模板：为每个DataNode自动创建独立PVC
+  volumeClaimTemplates:
+  - metadata:
+      name: datanode-data
+    spec:
+      accessModes: [ "ReadWriteOnce" ]
+      storageClassName: "local"
+      resources:
+        requests:
+          storage: 10Gi # 每个DataNode 10Gi存储，可调整
 ---
-apiVersion: v1
-kind: Service
-metadata:
-  name: datanode
-  namespace: bigdata2
-spec:
-  type: NodePort
-  selector:
-    app: hadoop
-    component: datanode
-  ports:
-  - name: webui
-    port: 9864
-    targetPort: 9864
-    nodePort: 30075
-  - name: data-transfer
-    port: 9866
-    targetPort: 9866
-    nodePort: 30077
-  - name: ipc
-    port: 9867
-    targetPort: 9867
----
-# 3. ResourceManager Deployment + Service
+# 3. ResourceManager Deployment + Service（不变）
 apiVersion: apps/v1
 kind: Deployment
 metadata:
@@ -589,7 +578,7 @@ spec:
           timeoutSeconds: 5
         readinessProbe:
           exec:
-            command: ["yarn", "node", "-list"]  # 检测ResourceManager是否就绪
+            command: ["yarn", "node", "-list"]
           initialDelaySeconds: 120
           periodSeconds: 10
           timeoutSeconds: 5
@@ -635,7 +624,7 @@ spec:
     port: 8032
     targetPort: 8032
 ---
-# 4. NodeManager Deployment + Service
+# 4. NodeManager Deployment + Service（不变）
 apiVersion: apps/v1
 kind: Deployment
 metadata:
@@ -730,12 +719,12 @@ spec:
           initialDelaySeconds: 240
           periodSeconds: 20
         readinessProbe:
-          tcpSocket:  # 直接检测8042端口（Web服务端口），通即就绪
+          tcpSocket:
             port: 8042
-          initialDelaySeconds: 30  # 启动后30秒开始检测（足够Web服务启动）
-          periodSeconds: 5         # 每5秒检测一次
-          timeoutSeconds: 3        # 超时3秒
-          successThreshold: 1      # 1次成功即标记就绪
+          initialDelaySeconds: 30
+          periodSeconds: 5
+          timeoutSeconds: 3
+          successThreshold: 1
       volumes:
       - name: hadoop-config
         configMap:
