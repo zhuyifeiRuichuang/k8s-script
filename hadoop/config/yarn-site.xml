@@ -13,7 +13,7 @@
     </property>
     <property>
         <name>yarn.acl.enable</name>
-        <value>0</value>
+        <value>false</value>
     </property>
     <property>
         <name>yarn.nodemanager.env-whitelist</name>
