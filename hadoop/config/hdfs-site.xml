@@ -1,6 +1,6 @@
 <configuration>
 	<property>
-    <name>dfs.data.dir</name>
+    <name>dfs.namenode.name.dir</name>
     <value>/opt/hadoop/dfsdata/namenode</value>
 </property>
 <property>
