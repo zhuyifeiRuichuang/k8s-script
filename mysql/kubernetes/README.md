@@ -1,7 +1,7 @@
 # 说明
 在kubernetes环境部署和测试MySQL任意版本(必须是docker hub 有镜像的)。  
 yaml配置已将容器内`/var/lib/mysql`配置数据持久化到k8s集群的pvc。  
-单实例可以使用deployment类型部署，集群和主从需使用statefulset类型部署。集群架构推荐使用MySQL的operator部署，例如`https://dev.mysql.com/doc/relnotes/mysql-operator/en/news-9-5-0-2.2.6.html`
+单实例可以使用deployment类型部署，集群和主从需使用statefulset类型部署。集群架构推荐使用MySQL的operator部署，例如`https://dev.mysql.com/doc/mysql-operator/en/`
 | 特性               | 主从架构 (Master-Slave)                              | InnoDB Cluster (MGR / HA)                          |
 |--------------------|------------------------------------------------------|---------------------------------------------------|
 | 原理               | 异步复制。主库写，异步传给从库。                     | 组复制 (MGR)。基于 Paxos 协议，强一致性/最终一致性。 |
