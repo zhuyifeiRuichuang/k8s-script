@@ -16,7 +16,6 @@
         <name>javax.jdo.option.ConnectionPassword</name>
         <value>Root@123</value>
     </property>
-
     <property>
         <name>hive.metastore.uris</name>
         <value>thrift://localhost:9083</value>
@@ -41,7 +40,6 @@
         <name>hive.metastore.port</name>
         <value>9083</value>
     </property>
-
     <property>
         <name>iceberg.engine.hive.enabled</name>
         <value>true</value>
@@ -52,7 +50,6 @@
         <value>hive</value>
         <description>Default Iceberg catalog type. Use 'hive' for Hive Metastore.</description>
     </property>
-
     <property>
         <name>hive.server2.thrift.bind.host</name>
         <value>0.0.0.0</value>
@@ -73,7 +70,6 @@
         <name>hive.server2.webui.max.threads</name>
         <value>50</value>
     </property>
-
     <property>
         <name>hive.execution.engine</name>
         <value>mr</value>
