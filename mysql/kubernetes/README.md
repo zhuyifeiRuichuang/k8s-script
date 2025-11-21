@@ -3,10 +3,10 @@
 yaml配置已将容器内`/var/lib/mysql`配置数据持久化到k8s集群的pvc。  
 单实例可以使用deployment类型部署，集群和主从需使用statefulset类型部署，应优先使用MySQL的operator部署。例如`https://dev.mysql.com/doc/relnotes/mysql-operator/en/news-9-5-0-2.2.6.html`
 ## yaml版本说明
-deployment
+deployment  
 v1,单实例。mysql:5.7.44  
-statefulset
-v2,mysql:8.0,单实例  
+statefulset  
+v2,单实例。mysql:8.0  
 # 快速部署
 在k8s集群内快速部署MySQL
 ```bash
