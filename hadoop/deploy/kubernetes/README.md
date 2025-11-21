@@ -3,7 +3,7 @@
 若正式使用，应当拆分yaml文件各资源类型到单独yaml文件，减少资源之间修改配置的影响。自担风险。  
 ## 版本说明
 无数据持久化。  
-`hadoop-v1.yaml`,pod方式部署。有故障。 
+`hadoop-v1.yaml`,pod方式部署。有故障。   
 `hadoop-v2.yaml`,deployment方式部署。有故障。
 
 # 快捷部署
