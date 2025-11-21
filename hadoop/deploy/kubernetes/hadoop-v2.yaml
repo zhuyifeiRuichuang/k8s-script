@@ -1,10 +1,8 @@
-# 命名空间（不变）
 apiVersion: v1
 kind: Namespace
 metadata:
   name: bigdata2
 ---
-# Hadoop XML配置ConfigMap（修改dfs.replication为3，适配3个DataNode）
 apiVersion: v1
 kind: ConfigMap
 metadata:
@@ -32,7 +30,7 @@ data:
       </property>
       <property>
         <name>dfs.replication</name>
-        <value>3</value> <!-- 副本数=DataNode数量，可根据实际调整 -->
+        <value>3</value>
       </property>
       <property>
         <name>dfs.namenode.name.dir</name>
@@ -48,11 +46,11 @@ data:
       </property>
       <property>
         <name>dfs.client.use.datanode.hostname</name>
-        <value>true</value> <!-- 允许通过Pod名称访问DataNode -->
+        <value>true</value>
       </property>
       <property>
         <name>dfs.datanode.use.datanode.hostname</name>
-        <value>true</value> <!-- DataNode之间通过主机名通信 -->
+        <value>true</value>
       </property>
     </configuration>
   mapred-site.xml: |
@@ -160,7 +158,6 @@ data:
       </property>
     </configuration>
 ---
-# 测试脚本ConfigMap（不变）
 apiVersion: v1
 kind: ConfigMap
 metadata:
@@ -174,7 +171,6 @@ data:
     echo "HDFS Status: $(hdfs dfsadmin -report | grep 'DFS Used%')"
     echo "YARN Status: $(yarn node -list)"
 ---
-# PVC配置（删除原有datanode-pvc，改为StatefulSet的PVC模板）
 apiVersion: v1
 kind: PersistentVolumeClaim
 metadata:
@@ -211,7 +207,6 @@ spec:
     requests:
       storage: 10Gi
 ---
-# 1. Namenode Deployment + Service（不变）
 apiVersion: apps/v1
 kind: Deployment
 metadata:
@@ -317,6 +312,7 @@ spec:
       - name: namenode-logs
         emptyDir: {}
 ---
+# Namenode Service（移除所有nodePort）
 apiVersion: v1
 kind: Service
 metadata:
@@ -331,25 +327,21 @@ spec:
   - name: webui
     port: 9870
     targetPort: 9870
-    nodePort: 30070
   - name: rpc
     port: 8020
     targetPort: 8020
-    nodePort: 30071
   - name: datanode-http
     port: 9868
     targetPort: 9868
-    nodePort: 30076
 ---
-# 2. DataNode StatefulSet + Headless Service（核心修改）
-# Headless Service（无集群IP，通过DNS解析Pod名称）
+# DataNode Headless Service（不变，无NodePort）
 apiVersion: v1
 kind: Service
 metadata:
   name: datanode-headless
   namespace: bigdata2
 spec:
-  clusterIP: None # Headless服务，不分配ClusterIP
+  clusterIP: None
   selector:
     app: hadoop
     component: datanode
@@ -364,7 +356,6 @@ spec:
     port: 9867
     targetPort: 9867
 ---
-# DataNode StatefulSet（支持多副本，自动创建PVC）
 apiVersion: apps/v1
 kind: StatefulSet
 metadata:
@@ -374,8 +365,8 @@ metadata:
     app: hadoop
     component: datanode
 spec:
-  serviceName: datanode-headless # 关联Headless Service
-  replicas: 3 # 初始3个DataNode，可灵活调整
+  serviceName: datanode-headless
+  replicas: 3
   selector:
     matchLabels:
       app: hadoop
@@ -396,7 +387,6 @@ spec:
         args:
           - |
             set -e
-            # 等待Namenode就绪（延长超时时间到10分钟）
             for i in {1..60}; do
               if nc -z namenode 8020; then
                 echo "Namenode已就绪！"
@@ -409,10 +399,8 @@ spec:
               echo "Namenode未就绪，等待10秒..."
               sleep 10
             done
-            # 创建数据目录（每个Pod独立目录，无冲突）
             mkdir -p /tmp/hadoop-root/dfs/data
             chmod -R 777 /tmp/hadoop-root/
-            # 启动DataNode（自动注册到Namenode）
             echo "=== 启动DataNode（Pod名称：$(hostname)） ==="
             hdfs datanode
         ports:
@@ -427,7 +415,7 @@ spec:
           - name: HADOOP_LOG_DIR
             value: /tmp/hadoop-logs
           - name: HADOOP_OPTS
-            value: "-Djava.net.preferIPv4Stack=true -Ddfs.datanode.hostname=$(hostname)" # 绑定Pod名称
+            value: "-Djava.net.preferIPv4Stack=true -Ddfs.datanode.hostname=$(hostname)"
         volumeMounts:
         - name: hadoop-config
           mountPath: /opt/hadoop/etc/hadoop/core-site.xml
@@ -461,11 +449,10 @@ spec:
           timeoutSeconds: 5
         readinessProbe:
           exec:
-            command: ["hdfs", "dfsadmin", "-report | grep -q $(hostname)"] # 检测当前Pod是否注册成功
+            command: ["sh", "-c", "hdfs dfsadmin -report | grep -q $(hostname)"]
           initialDelaySeconds: 120
           periodSeconds: 10
           timeoutSeconds: 5
-  # PVC模板：为每个DataNode自动创建独立PVC
   volumeClaimTemplates:
   - metadata:
       name: datanode-data
@@ -474,9 +461,8 @@ spec:
       storageClassName: "local"
       resources:
         requests:
-          storage: 10Gi # 每个DataNode 10Gi存储，可调整
+          storage: 10Gi
 ---
-# 3. ResourceManager Deployment + Service（不变）
 apiVersion: apps/v1
 kind: Deployment
 metadata:
@@ -597,6 +583,7 @@ spec:
       - name: resourcemanager-logs
         emptyDir: {}
 ---
+# ResourceManager Service（移除所有nodePort）
 apiVersion: v1
 kind: Service
 metadata:
@@ -611,20 +598,16 @@ spec:
   - name: webui
     port: 8088
     targetPort: 8088
-    nodePort: 30072
   - name: rpc
     port: 8030
     targetPort: 8030
-    nodePort: 30073
   - name: scheduler
     port: 8031
     targetPort: 8031
-    nodePort: 30079
   - name: yarn-rpc
     port: 8032
     targetPort: 8032
 ---
-# 4. NodeManager Deployment + Service（不变）
 apiVersion: apps/v1
 kind: Deployment
 metadata:
@@ -736,6 +719,7 @@ spec:
       - name: nodemanager-logs
         emptyDir: {}
 ---
+# NodeManager Service（移除所有nodePort）
 apiVersion: v1
 kind: Service
 metadata:
@@ -750,8 +734,6 @@ spec:
   - name: webui
     port: 8042
     targetPort: 8042
-    nodePort: 30074
   - name: localizer
     port: 8040
     targetPort: 8040
-    nodePort: 30078
