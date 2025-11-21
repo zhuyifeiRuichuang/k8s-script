@@ -12,11 +12,15 @@ yaml配置已将容器内`/var/lib/mysql`配置数据持久化到k8s集群的pvc
 | 适用场景           | 读多写少，对数据丢失有一点容忍度（如日志、报表）。   | 核心交易系统，金融级要求，不能丢数据。             |
 
 ## yaml版本说明
-deployment  
+### deployment  
+```
 v1,单实例。mysql:5.7.44  
-statefulset  
+```
+### statefulset  
+```
 v2,单实例。mysql:8.0  
 v3,主从架构，1主2从，读写分离，mysql:9.5.0
+```
 # 快速部署
 在k8s集群内快速部署MySQL
 ```bash
