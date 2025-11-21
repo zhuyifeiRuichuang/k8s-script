@@ -4,7 +4,7 @@
     <value>/opt/hadoop/dfsdata/namenode</value>
 </property>
 <property>
-    <name>dfs.data.dir</name>
+    <name>dfs.datanode.data.dir</name>
     <value>/opt/hadoop/dfsdata/datanode</value>
 </property>
 <property>
