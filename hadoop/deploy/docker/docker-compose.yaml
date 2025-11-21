@@ -11,7 +11,7 @@ services:
     environment:
       ENSURE_NAMENODE_DIR: "/tmp/hadoop-root/dfs/name"
     volumes:
-      - hadoop-namenode-data:/tmp/hadoop-root/dfs/name
+      - /tmp/hadoop-root/dfs/name
 
   datanode:
     build: .
@@ -33,7 +33,7 @@ services:
       - ./config
     volumes:
       - ./test.sh:/opt/test.sh
-      - hadoop-resourcemanager-data:/tmp/hadoop-root/yarn/rm
+      - /tmp/hadoop-root/yarn/rm
 
   nodemanager:
     build: .
@@ -43,9 +43,4 @@ services:
     env_file:
       - ./config
     volumes:
-      - hadoop-nodemanager-data:/tmp/hadoop-root/yarn/nm
-
-volumes:
-  hadoop-namenode-data:
-  hadoop-resourcemanager-data:
-  hadoop-nodemanager-data:
+      - /tmp/hadoop-root/yarn/nm
