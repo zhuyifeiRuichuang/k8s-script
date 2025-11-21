@@ -229,19 +229,21 @@ metadata:
     app: hadoop
     component: namenode
 spec:
-  replicas: 1  # Namenode通常单副本
+  replicas: 1
   selector:
     matchLabels:
       app: hadoop
       component: namenode
   strategy:
-    type: Recreate  # 有状态组件使用重建策略，避免并行实例冲突
+    type: Recreate
   template:
     metadata:
       labels:
         app: hadoop
         component: namenode
     spec:
+      hostname: namenode
+      subdomain: hadoop
       containers:
       - name: namenode
         image: ccr.ccs.tencentyun.com/hadoop-dev/hadoop:3.1.1
@@ -252,22 +254,14 @@ spec:
         args:
           - |
             set -e
-            # 校验配置文件
-            echo "=== 校验配置文件 ==="
-            ls -l /opt/hadoop/etc/hadoop/*.xml
-            cat /opt/hadoop/etc/hadoop/core-site.xml
-            echo "======================"
-            # 确保数据目录存在并授权
             mkdir -p /tmp/hadoop-root/dfs/name
             chmod -R 777 /tmp/hadoop-root/
-            # 首次格式化Namenode
             if [ ! -d "/tmp/hadoop-root/dfs/name/current" ]; then
               echo "=== 首次启动，格式化Namenode ==="
               hdfs namenode -format -force -nonInteractive || { echo "格式化失败"; exit 1; }
             fi
-            # 启动Namenode
             echo "=== 启动Namenode ==="
-            hdfs namenode
+            hdfs namenode -Ddfs.namenode.rpc-bind-host=0.0.0.0 -Ddfs.namenode.http-bind-host=0.0.0.0
         ports:
         - containerPort: 9870
         - containerPort: 8020
@@ -279,6 +273,8 @@ spec:
             value: "$PATH:/opt/hadoop/bin:/opt/hadoop/sbin:/usr/bin"
           - name: HADOOP_LOG_DIR
             value: /tmp/hadoop-logs
+          - name: HADOOP_OPTS
+            value: "-Djava.net.preferIPv4Stack=true"
         volumeMounts:
         - name: hadoop-config
           mountPath: /opt/hadoop/etc/hadoop/core-site.xml
@@ -304,17 +300,22 @@ spec:
           mountPath: /tmp/hadoop-root
         - name: namenode-logs
           mountPath: /tmp/hadoop-logs
-        # 健康检查
+        # 优化存活探针：延长初始延迟，避免误杀
         livenessProbe:
-          tcpSocket:
-            port: 8020
-          initialDelaySeconds: 60
-          periodSeconds: 10
+          exec:
+            command: ["hdfs", "dfsadmin", "-report"]  # 执行实际的服务状态命令
+          initialDelaySeconds: 180  # 3分钟后开始检测（适配格式化+启动）
+          periodSeconds: 15
+          timeoutSeconds: 5
+          failureThreshold: 3  # 连续3次失败才判定为存活失败
+        # 优化就绪探针：用服务命令检测，而非仅端口
         readinessProbe:
-          tcpSocket:
-            port: 8020
-          initialDelaySeconds: 30
-          periodSeconds: 5
+          exec:
+            command: ["hdfs", "dfsadmin", "-safemode", "get"]  # 检测Namenode是否退出安全模式
+          initialDelaySeconds: 120  # 2分钟后开始检测
+          periodSeconds: 10
+          timeoutSeconds: 5
+          successThreshold: 1  # 1次成功即判定为就绪
       volumes:
       - name: hadoop-config
         configMap:
@@ -360,7 +361,7 @@ metadata:
     app: hadoop
     component: datanode
 spec:
-  replicas: 1  # 可根据需求调整副本数
+  replicas: 1
   selector:
     matchLabels:
       app: hadoop
@@ -386,25 +387,22 @@ spec:
         args:
           - |
             set -e
-            # 等待Namenode就绪
-            echo "=== 等待Namenode就绪 ==="
-            for i in {1..30}; do
+            for i in {1..60}; do  # 延长等待Namenode的时间到10分钟
               if nc -z namenode 8020; then
                 echo "Namenode已就绪！"
                 break
               fi
+              if [ $i -eq 60 ]; then
+                echo "Namenode超时未就绪，退出！"
+                exit 1
+              fi
               echo "Namenode未就绪，等待10秒..."
               sleep 10
             done
-            # 校验配置文件
-            echo "=== 校验配置文件 ==="
-            ls -l /opt/hadoop/etc/hadoop/*.xml
-            # 确保数据目录存在并授权
             mkdir -p /tmp/hadoop-root/dfs/data
             chmod -R 777 /tmp/hadoop-root/
-            # 启动Datanode
             echo "=== 启动Datanode ==="
-            hdfs datanode
+            hdfs datanode -Ddfs.datanode.address=0.0.0.0:9867 -Ddfs.datanode.http.address=0.0.0.0:9864
         ports:
         - containerPort: 9864
         - containerPort: 9866
@@ -416,6 +414,8 @@ spec:
             value: "$PATH:/opt/hadoop/bin:/opt/hadoop/sbin:/usr/bin"
           - name: HADOOP_LOG_DIR
             value: /tmp/hadoop-logs
+          - name: HADOOP_OPTS
+            value: "-Djava.net.preferIPv4Stack=true"
         volumeMounts:
         - name: hadoop-config
           mountPath: /opt/hadoop/etc/hadoop/core-site.xml
@@ -441,17 +441,18 @@ spec:
           mountPath: /tmp/hadoop-root
         - name: datanode-logs
           mountPath: /tmp/hadoop-logs
-        # 健康检查
         livenessProbe:
-          tcpSocket:
-            port: 9867
-          initialDelaySeconds: 60
-          periodSeconds: 10
+          exec:
+            command: ["hdfs", "dfsadmin", "-report"]
+          initialDelaySeconds: 180
+          periodSeconds: 15
+          timeoutSeconds: 5
         readinessProbe:
-          tcpSocket:
-            port: 9867
-          initialDelaySeconds: 30
-          periodSeconds: 5
+          exec:
+            command: ["hdfs", "dfsadmin", "-report"]  # 检测Datanode是否已注册到Namenode
+          initialDelaySeconds: 120
+          periodSeconds: 10
+          timeoutSeconds: 5
       volumes:
       - name: hadoop-config
         configMap:
@@ -496,7 +497,7 @@ metadata:
     app: hadoop
     component: resourcemanager
 spec:
-  replicas: 1  # ResourceManager通常单副本
+  replicas: 1
   selector:
     matchLabels:
       app: hadoop
@@ -509,6 +510,8 @@ spec:
         app: hadoop
         component: resourcemanager
     spec:
+      hostname: resourcemanager
+      subdomain: hadoop
       containers:
       - name: resourcemanager
         image: ccr.ccs.tencentyun.com/hadoop-dev/hadoop:3.1.1
@@ -519,25 +522,22 @@ spec:
         args:
           - |
             set -e
-            # 等待Namenode就绪
-            echo "=== 等待Namenode就绪 ==="
-            for i in {1..30}; do
+            for i in {1..60}; do
               if nc -z namenode 8020; then
                 echo "Namenode已就绪！"
                 break
               fi
+              if [ $i -eq 60 ]; then
+                echo "Namenode超时未就绪，退出！"
+                exit 1
+              fi
               echo "Namenode未就绪，等待10秒..."
               sleep 10
             done
-            # 校验配置文件
-            echo "=== 校验配置文件 ==="
-            ls -l /opt/hadoop/etc/hadoop/*.xml
-            # 确保数据目录存在并授权
             mkdir -p /tmp/hadoop-yarn
             chmod -R 777 /tmp/hadoop-yarn
-            # 启动ResourceManager
             echo "=== 启动ResourceManager ==="
-            yarn resourcemanager
+            yarn resourcemanager -Dyarn.resourcemanager.address=0.0.0.0:8032 -Dyarn.resourcemanager.webapp.address=0.0.0.0:8088
         ports:
         - containerPort: 8088
         - containerPort: 8030
@@ -550,6 +550,8 @@ spec:
             value: "$PATH:/opt/hadoop/bin:/opt/hadoop/sbin:/usr/bin"
           - name: HADOOP_LOG_DIR
             value: /tmp/hadoop-logs
+          - name: HADOOP_OPTS
+            value: "-Djava.net.preferIPv4Stack=true"
         volumeMounts:
         - name: hadoop-config
           mountPath: /opt/hadoop/etc/hadoop/core-site.xml
@@ -579,17 +581,18 @@ spec:
           readOnly: false
         - name: resourcemanager-logs
           mountPath: /tmp/hadoop-logs
-        # 健康检查
         livenessProbe:
-          tcpSocket:
-            port: 8032
-          initialDelaySeconds: 60
-          periodSeconds: 10
+          exec:
+            command: ["yarn", "node", "-list"]
+          initialDelaySeconds: 180
+          periodSeconds: 15
+          timeoutSeconds: 5
         readinessProbe:
-          tcpSocket:
-            port: 8032
-          initialDelaySeconds: 30
-          periodSeconds: 5
+          exec:
+            command: ["yarn", "node", "-list"]  # 检测ResourceManager是否就绪
+          initialDelaySeconds: 120
+          periodSeconds: 10
+          timeoutSeconds: 5
       volumes:
       - name: hadoop-config
         configMap:
@@ -642,7 +645,7 @@ metadata:
     app: hadoop
     component: nodemanager
 spec:
-  replicas: 1  # 可根据需求调整副本数
+  replicas: 1
   selector:
     matchLabels:
       app: hadoop
@@ -668,25 +671,22 @@ spec:
         args:
           - |
             set -e
-            # 等待ResourceManager就绪
-            echo "=== 等待ResourceManager就绪 ==="
-            for i in {1..30}; do
+            for i in {1..60}; do
               if nc -z resourcemanager 8032; then
                 echo "ResourceManager已就绪！"
                 break
               fi
+              if [ $i -eq 60 ]; then
+                echo "ResourceManager超时未就绪，退出！"
+                exit 1
+              fi
               echo "ResourceManager未就绪，等待10秒..."
               sleep 10
             done
-            # 校验配置文件
-            echo "=== 校验配置文件 ==="
-            ls -l /opt/hadoop/etc/hadoop/*.xml
-            # 确保数据目录存在并授权
             mkdir -p /tmp/hadoop-yarn-nm
             chmod -R 777 /tmp/hadoop-yarn-nm
-            # 启动NodeManager
             echo "=== 启动NodeManager ==="
-            yarn nodemanager
+            yarn nodemanager -Dyarn.nodemanager.address=0.0.0.0:8040 -Dyarn.nodemanager.webapp.address=0.0.0.0:8042
         ports:
         - containerPort: 8042
         - containerPort: 8040
@@ -697,6 +697,8 @@ spec:
             value: "$PATH:/opt/hadoop/bin:/opt/hadoop/sbin:/usr/bin"
           - name: HADOOP_LOG_DIR
             value: /tmp/hadoop-logs
+          - name: HADOOP_OPTS
+            value: "-Djava.net.preferIPv4Stack=true"
         volumeMounts:
         - name: hadoop-config
           mountPath: /opt/hadoop/etc/hadoop/core-site.xml
@@ -722,17 +724,18 @@ spec:
           mountPath: /tmp/hadoop-yarn-nm
         - name: nodemanager-logs
           mountPath: /tmp/hadoop-logs
-        # 健康检查
         livenessProbe:
-          tcpSocket:
-            port: 8040
-          initialDelaySeconds: 60
-          periodSeconds: 10
+          exec:
+            command: ["yarn", "node", "-status", "$(hostname)"]
+          initialDelaySeconds: 180
+          periodSeconds: 15
+          timeoutSeconds: 5
         readinessProbe:
-          tcpSocket:
-            port: 8040
-          initialDelaySeconds: 30
-          periodSeconds: 5
+          exec:
+            command: ["yarn", "node", "-status", "$(hostname)"]  # 检测NodeManager是否注册到ResourceManager
+          initialDelaySeconds: 120
+          periodSeconds: 10
+          timeoutSeconds: 5
       volumes:
       - name: hadoop-config
         configMap:
