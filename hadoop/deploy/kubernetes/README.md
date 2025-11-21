@@ -4,7 +4,7 @@
 ## 版本说明
 已配置数据持久化。  
 `hadoop-v1.yaml`,pod方式部署。  
-`hadoop-v2.yaml`,deployment方式部署。
+`hadoop-v2.yaml`,deployment方式部署。有故障。
 
 # 快捷部署
 修改`hadoop.yaml`,`namespace bigdata2`应改为全新namespace，避免排错时误删现有资源。  
