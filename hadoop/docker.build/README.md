@@ -8,3 +8,19 @@
 docker build -t hadoop:3.1.1 .
 ```
 `log4j.properties`使`kubectl logs`可以直接查看到组件日志。非必须。
+
+# 可用镜像清单
+以下镜像均使用JDK8。
+## 基础镜像
+`hadoop-runner:apache`是apache hadoop官方原版的备份。
+```bash
+ccr.ccs.tencentyun.com/hadoop-dev/hadoop-runner:apache
+ccr.ccs.tencentyun.com/hadoop-dev/hadoop-runner:ubuntu20
+ccr.ccs.tencentyun.com/hadoop-dev/hadoop-runner:centos7
+ccr.ccs.tencentyun.com/hadoop-dev/hadoop-runner:ubuntu22
+```
+## hadoop 镜像
+```bash
+ccr.ccs.tencentyun.com/hadoop-dev/hadoop:3.1.1
+ccr.ccs.tencentyun.com/hadoop-dev/hadoop:3.4.2
+```
