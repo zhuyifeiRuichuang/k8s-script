@@ -9,9 +9,9 @@ services:
     env_file:
       - ./config
     environment:
-      ENSURE_NAMENODE_DIR: "/tmp/hadoop-hadoop/dfs/name"
+      ENSURE_NAMENODE_DIR: "/tmp/hadoop/data/namenode"
     volumes:
-      - /tmp/hadoop-hadoop/dfs/name
+      - /tmp/hadoop/data/namenode
 
   datanode:
     build: .
@@ -20,7 +20,7 @@ services:
     env_file:
       - ./config
     volumes:
-      - /tmp/hadoop-hadoop/dfs/data
+      - /tmp/hadoop/data/datanode
 
   resourcemanager:
     build: .
