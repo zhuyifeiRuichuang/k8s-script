@@ -1,3 +1,4 @@
+# 若自定义基础镜像，请替换
 FROM apache/hadoop-runner
 WORKDIR /opt
 # 在此处指定hadoop版本
