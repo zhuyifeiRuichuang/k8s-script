@@ -15,3 +15,39 @@ kubectl apply -f mysql.yaml
 bash checkInternal.sh
 ```
 ## 数据持久化测试
+```bash
+# 查询pod名字
+kubectl get pod -n bigdata2 
+
+# 访问pod
+kubectl exec -it -n bigdata2 mysql-55cf49d874-z6sr2 -- bash
+
+# 登录数据库，默认密码root123456
+mysql -u root -p 
+# 配置测试数据
+mysql> CREATE DATABASE IF NOT EXISTS test_persistence;
+mysql> USE test_persistence;
+mysql> CREATE TABLE IF NOT EXISTS user (id INT PRIMARY KEY, name VARCHAR(20));
+mysql> INSERT INTO user (id, name) VALUES (1, "persistence_test");
+mysql> SELECT * FROM user;
+mysql> exit
+bash-4.2# exit
+
+# 删除pod，模拟MySQL被破坏
+kubectl delete pod -n bigdata2 mysql-55cf49d874-z6sr2 
+
+# 查询pod，确认pod被deployment自动恢复
+kubectl get pod -n bigdata2 
+
+# 访问pod
+kubectl exec -it -n bigdata2 mysql-55cf49d874-td2c7 -- bash
+# 登录数据库，默认密码root123456
+bash-4.2# mysql -u root -p
+# 查询数据，若可见数据，则数据持久化测试成功
+mysql> USE test_persistence;
+mysql> SELECT * FROM user;
+mysql> exit
+Bye
+bash-4.2# exit
+exit
+```
