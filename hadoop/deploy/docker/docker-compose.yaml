@@ -42,7 +42,6 @@ services:
       - ./config
     volumes:
       - ./test.sh:/opt/test.sh
-      # 对应 Yarn 的默认路径
       - resourcemanager_data:/tmp/hadoop-hadoop/yarn/data
 
   nodemanager:
