@@ -1,0 +1,1 @@
+在kubernetes环境部署和测试MySQL任意版本。
