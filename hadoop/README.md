@@ -1,2 +1,3 @@
-部署相关内容在目录deploy  
-定制Hadoop容器镜像，在目录docker.build，先构建容器镜像，再部署。默认使用我已构建的镜像。
+host。主机或云主机环境部署管理。  
+docker。docker容器化部署管理。  
+kubernetes。k8s环境部署管理。
