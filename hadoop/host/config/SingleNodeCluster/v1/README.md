@@ -1,4 +1,7 @@
-文件说明
+# 使用说明
+将文件复制到Hadoop的配置文件目录，例如 hadoop3.1.1/etc/hadoop
+
+# 文件说明
 | 文件 | 说明 |
 |----|----|
-| worker| 填写主机hostname |
+| workers| 填写主机hostname |
