@@ -2,6 +2,11 @@
 docker环境用到的资源
 在docker环境部署Hadoop任意版本。仅用于测试。  
 未配置数据持久化，配置数据卷会导致namenode启动失败。容器停止运行时会自动清空数据。
+# yaml版本说明
+```bash
+v1,Hadoop原版，无数据持久化。
+v2,namnode数据持久化。
+```
 # 使用说明
 在文件`.env`指定hadoop的版本。会影响docker compose build制作的镜像。  
 先构建容器镜像，后启动容器。  
@@ -16,7 +21,7 @@ docker build -t hadoop:3.1.1 .
 # 分组件构建容器镜像
 先修改`.env`中Hadoop的版本号。
 ```bash
-docker compose build
+docker compose build -f compose.yaml
 ```
 
 # 临时启动Hadoop
@@ -26,7 +31,7 @@ docker compose up -d
 
 # 启动Hadoop集群，并启动3个数据节点
 ```bash
-docker compose up -d --scale datanode=3
+docker compose up -f compose.yaml -d --scale datanode=3
 ```
 
 # 查询Hadoop集群状态
