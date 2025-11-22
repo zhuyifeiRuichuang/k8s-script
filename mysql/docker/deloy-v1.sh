@@ -1,0 +1,31 @@
+docker run -d \
+  --name mysql-single \
+  --restart unless-stopped \
+  -p 3306:3306 \
+  -e MYSQL_ROOT_PASSWORD=root123456 \
+  -e MYSQL_ROOT_HOST=% \
+  -v mysql-data:/var/lib/mysql \
+  --health-cmd='mysqladmin ping -h127.0.0.1 -P3306 -uroot -p$${MYSQL_ROOT_PASSWORD} --silent' \
+  --health-interval=10s \
+  --health-timeout=5s \
+  --health-retries=3 \
+  --health-start-period=30s \
+  docker.1ms.run/mysql:5.7.44 \
+  --character-set-server=utf8mb4 \
+  --collation-server=utf8mb4_unicode_ci \
+  --max-connections=10000 \
+  --max-connect-errors=100000 \
+  --wait-timeout=600 \
+  --interactive-timeout=600 \
+  --innodb-buffer-pool-size=1G \
+  --innodb-log-file-size=256M \
+  --innodb-flush-log-at-trx-commit=2 \
+  --innodb-flush-method=O_DIRECT \
+  --query-cache-type=0 \
+  --query-cache-size=0 \
+  --slow-query-log=1 \
+  --long-query-time=2 \
+  --server-id=1 \
+  --log-bin=mysql-bin \
+  --binlog-format=ROW \
+  --expire-logs-days=7
