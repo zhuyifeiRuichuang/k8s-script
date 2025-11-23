@@ -3,10 +3,11 @@ docker环境用到的资源
 在docker环境部署Hadoop任意版本。仅用于测试。  
 
 # yaml版本说明
-```bash
-v1,Hadoop原版，无数据持久化。
-v2,namnode数据持久化。
-```
+| 版本 | 说明 |
+|----|----|
+| v1 | Hadoop原版，数据不持久 |
+| v2 | namenode和datanode数据持久化存储到数据卷 |
+
 # 使用说明
 在文件`.env`指定hadoop的版本。会影响docker compose build制作的镜像。  
 先构建容器镜像，后启动容器。  
