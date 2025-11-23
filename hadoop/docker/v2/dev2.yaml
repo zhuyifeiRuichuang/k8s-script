@@ -1,0 +1,62 @@
+volumes:
+  hadoop-nn-data:
+  hadoop-dn-data:
+
+services:
+  namenode:
+    build: .
+    image: zhuyifeiruichuang/hadoop:3.1.1
+    hostname: namenode
+    command: ["sh", "-c", "sudo mkdir -p /opt/hadoop/data/nn && sudo chown -R hadoop:hadoop /opt/hadoop/data && if [ ! -d /opt/hadoop/data/nn/current ]; then echo 'Formatting NameNode...' && hdfs namenode -format; fi && hdfs namenode"]
+    ports:
+      - 9870:9870
+      - 9000:9000
+    env_file:
+      - ./config
+    environment:
+      ENSURE_NAMENODE_DIR: "/opt/hadoop/data/nn"
+    volumes:
+      - hadoop-nn-data:/opt/hadoop/data/nn
+    restart: unless-stopped
+
+  datanode:
+    build: .
+    image: zhuyifeiruichuang/hadoop:3.1.1
+    command: ["sh", "-c", "sudo mkdir -p /opt/hadoop/data/dn && sudo chown -R hadoop:hadoop /opt/hadoop/data && hdfs datanode"]
+    env_file:
+      - ./config
+    ports:
+      - 9866:9866
+    volumes:
+      - hadoop-dn-data:/opt/hadoop/data/dn
+    depends_on:
+      - namenode
+    restart: unless-stopped
+
+  resourcemanager:
+    build: .
+    image: zhuyifeiruichuang/hadoop:3.1.1
+    hostname: resourcemanager
+    command: ["yarn", "resourcemanager"]
+    ports:
+      - 8088:8088
+      - 8032:8032
+    env_file:
+      - ./config
+    depends_on:
+      - namenode
+    restart: unless-stopped
+
+  nodemanager:
+    build: .
+    hostname: nodemanager
+    image: zhuyifeiruichuang/hadoop:3.1.1
+    command: ["yarn", "nodemanager"]
+    env_file:
+      - ./config
+    ports:
+      - 8042:8042
+    depends_on:
+      - resourcemanager
+      - namenode
+    restart: unless-stopped
