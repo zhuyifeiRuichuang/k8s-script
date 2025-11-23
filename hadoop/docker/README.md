@@ -29,12 +29,12 @@ docker build -t hadoop:3.1.1 .
 docker compose build
 ```
 
-# 临时启动Hadoop
+# 启动Hadoop
 ```bash
 docker compose up -d
 ```
 
-# 启动Hadoop集群，并启动3个数据节点
+# 启动Hadoop，且启动3个数据节点
 ```bash
 docker compose up -d --scale datanode=3
 ```
@@ -53,23 +53,11 @@ docker compose down
 docker compose down -v
 ```
 
-# compose-v2说明
-若使用此yaml，需先做环境初始化。  
-```bash
-# 在当前目录操作
-# 创建目录
-mkdir -p data/namenode
-mkdir -p data/datanode
-
-# 放宽权限（或者你可以将所有者改为容器内的 hadoop 用户 ID，通常是 1000）
-chmod 777 data/namenode
-chmod 777 data/datanode
-
-# 格式化 NameNode 并将其元数据写入 namenode_data 卷
-docker compose run --rm namenode hdfs namenode -format
-```
 
 # 数据持久化测试
+支持数据持久化的版本
+v2
+
 ## 测试namenode
 ```bash
 # 1. 进入 NameNode 容器
@@ -105,4 +93,4 @@ exit
 ```
 
 ## 测试datanode
-测试失败，数据会随机丢失。
+待更新
