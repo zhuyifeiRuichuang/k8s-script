@@ -6,7 +6,7 @@ docker环境用到的资源
 | 版本 | 说明 |
 |----|----|
 | v1 | Hadoop原版，数据不持久 |
-| v2 | namenode和datanode数据持久化存储到数据卷 |
+| v2 | namenode和datanode数据持久化存储到数据卷，无法多datanode，会数据混乱。 |
 
 # 使用说明
 可先构建容器镜像，后启动容器。也可以使用已有容器镜像。
