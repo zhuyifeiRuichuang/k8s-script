@@ -9,10 +9,14 @@ docker环境用到的资源
 | v2 | namenode和datanode数据持久化存储到数据卷 |
 
 # 使用说明
+可先构建容器镜像，后启动容器。也可以使用已有容器镜像。
+将版本目录下文件复制到其上级目录。例如使用v1目录内，则应在v1目录下执行命令`cp * ..`
+
+# 构建容器镜像
 在文件`.env`指定hadoop的版本。会影响docker compose build制作的镜像。  
-先构建容器镜像，后启动容器。  
 先下载需使用的hadoop版本软件到此目录，版本清单`https://archive.apache.org/dist/hadoop/common/`  
 例如`https://archive.apache.org/dist/hadoop/common/hadoop-3.1.1/hadoop-3.1.1.tar.gz`
+
 # 构建Hadoop指定版本容器镜像
 先修改`Dockerfile`的Hadoop版本号。
 ```bash
