@@ -1,5 +1,5 @@
 # 说明
-在k8s环境部署记录
+在k8s环境部署记录。根据个人需求选择不同版本配置文件。详见版本目录中说明。
 ## 镜像
 容器镜像参考[资料](https://github.com/zhuyifeiRuichuang/work-script/tree/main/hadoop/docker.build)打包定制专用镜像。案例采用Hadoop v3.1.1
 # 部署
