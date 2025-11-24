@@ -6,17 +6,31 @@ metadata:
   labels:
     app: hadoop-datanode
 spec:
-  type: NodePort  # 添加类型
+  ports:
+    - port: 9864
+      name: web
+    - port: 9866
+      name: data
+  clusterIP: None
+  selector:
+    app: hadoop-datanode
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: datanode-external
+  namespace: bigdata4
+  labels:
+    app: hadoop-datanode
+spec:
+  type: NodePort
   ports:
     - port: 9864
       name: web
       targetPort: 9864
-      # nodePort: 30064 # 删除固定端口
     - port: 9866
       name: data
       targetPort: 9866
-      # nodePort: 30066
-  clusterIP: None
   selector:
     app: hadoop-datanode
 ---
