@@ -173,3 +173,21 @@ total 8
 drwx------ 4 hadoop hadoop 4096 Nov 24 03:11 BP-461085605-10.233.70.200-1763949032615
 -rw-r--r-- 1 hadoop hadoop  229 Nov 24 03:11 VERSION
 ```
+# 配置更新
+若需更新配置文件，需修改confimap.yaml中内容，
+```bash
+# 应用更新
+kubectl apply -f hadoop-configmap.yaml
+
+# 重启namenode
+kubectl rollout restart statefulset namenode -n bigdata4
+
+# 重启 DataNode
+kubectl rollout restart statefulset datanode -n bigdata4
+
+# 重启 ResourceManager
+kubectl rollout restart statefulset resourcemanager -n bigdata4
+
+# 重启 NodeManager
+kubectl rollout restart statefulset nodemanager -n bigdata4
+```
