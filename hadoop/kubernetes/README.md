@@ -2,7 +2,7 @@
 在k8s环境部署记录
 ## 镜像
 容器镜像参考[资料](https://github.com/zhuyifeiRuichuang/work-script/tree/main/hadoop/docker.build)打包定制专用镜像。
-
+# 部署
 ```bash
 kubectl create namespace bigdata4
 kubectl apply -f hadoop-configmap.yaml
@@ -11,7 +11,7 @@ kubectl apply -f hadoop-datanode.yaml
 kubectl apply -f hadoop-resourcemanager.yaml
 kubectl apply -f hadoop-nodemanager.yaml
 ```
-部署后查询
+# 部署后查询
 ```bash
 root@master Mon Nov 24 [10:05:40] : /opt/bigdata2/hadoop/v3.1.1/v4
 # kubectl get all -n bigdata4 
@@ -39,11 +39,13 @@ NAME                        STATUS   VOLUME                                     
 hadoop-dn-data-datanode-0   Bound    pvc-1ce19f52-729d-4d2e-8b4a-6c064b5901fe   20Gi       RWO            local          26m
 hadoop-nn-data-namenode-0   Bound    pvc-8d162dd9-c732-4337-acd2-01945a9ff929   10Gi       RWO            local          33m
 ```
-# 浏览器访问测试
+# 测试
+部署后测试。
+## 浏览器访问
 <img width="2560" height="1479" alt="image" src="https://github.com/user-attachments/assets/9f70ed80-014a-46fa-b12d-cb3d18da2a41" />
 
-# 数据持久化测试
+## 数据持久化测试
 测试验证数据持久化，数据持久依赖pv，pv在，数据就在。
 
-## namenode
-## datanode
+### namenode
+### datanode
