@@ -4,7 +4,7 @@
 必须使用系统支持的最新版本docker。  
 
 # 二次开发
-无论你对Hadoop代码做任何改动，请将代码打包为`hadoop.tar.gz`文件再用于容器镜像构建。
+无论你对Hadoop代码做任何改动，请将最终制品打包为`hadoop.tar.gz`文件再用于容器镜像构建。
 # 构建基础镜像
 默认使用Hadoop官方的`apache/hadoop-runner:latest`,基于centos7，内置JDK8。  
 有基础镜像安全更新需求或软件版本更新需求的，可[自定义基础镜像](https://github.com/zhuyifeiRuichuang/work-script/tree/main/hadoop/docker.build/base)。  
