@@ -1,5 +1,11 @@
 # 说明
 有安全加固或其他需求的，可自定义基础镜像后，用于Hadoop镜像构建。
+# 目录结构
+
+**base**  
+ ├─ **scripts**  Hadoop官方脚本  
+ └─ **Dockerfile** 不同环境的配置文件
+
 # 构建基础镜像
 参考[Hadoop官方说明](https://apache.github.io/hadoop/hadoop-project-dist/hadoop-common/HadoopDocker.html)  
 在本目录进行构建。因[Hadoop官方项目](https://github.com/apache/hadoop/tree/docker-hadoop-runner-latest) 长期未更新Dockerfile，此处做部分改动。请自行对比判断是否要调整。  
