@@ -1,5 +1,5 @@
 # 说明
-部署记录
+部署记录。初始测试。
 ## 镜像
 容器镜像参考[资料](https://github.com/zhuyifeiRuichuang/work-script/tree/main/hadoop/docker.build)打包定制专用镜像。
 
