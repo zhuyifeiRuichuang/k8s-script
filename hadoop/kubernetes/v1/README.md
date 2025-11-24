@@ -2,7 +2,6 @@
 部署记录。初始测试。
 ## 镜像
 容器镜像参考[资料](https://github.com/zhuyifeiRuichuang/work-script/tree/main/hadoop/docker.build)打包定制专用镜像。
-点击这里 <a href="https://www.google.com" target="_blank" rel="noopener noreferrer">Google</a> 在新页签打开。
 
 ```bash
 kubectl create namespace bigdata4
