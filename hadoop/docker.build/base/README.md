@@ -7,7 +7,8 @@
 ## JDK版本选择说明
 参考[Hadoop官方说明](https://cwiki.apache.org/confluence/display/HADOOP/Hadoop+Java+Versions)，JDK8支持编译和运行hadoop当前所有版本，Hadoop v3.3及更高版本可使用JDK11运行。
 基础镜像默认使用JDK8，若使用JDK11，需编辑Dockerfile修改JDK版本。
-
+## dockerfile说明
+ubuntu22是目前最新支持的环境，ubuntu24及更高版本软件版本过高。
 ## 执行构建命令
 仅供参考
 ```bash
