@@ -6,20 +6,33 @@ metadata:
   labels:
     app: hadoop-namenode
 spec:
-  type: NodePort  # 必须添加这一行，否则不会分配随机端口
+  ports:
+    - port: 9870
+      name: web
+    - port: 9000
+      name: rpc
+    - port: 8020
+      name: ipc
+  clusterIP: None  # 必须保留 Headless，供 StatefulSet 内部使用
+  selector:
+    app: hadoop-namenode
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: namenode-external  # 新增外部访问专用 Service
+  namespace: bigdata4
+  labels:
+    app: hadoop-namenode
+spec:
+  type: NodePort  # 设置为 NodePort
   ports:
     - port: 9870
       name: web
       targetPort: 9870
-      # nodePort: 30070 # 注释或删除此行，K8s 会自动分配
     - port: 9000
       name: rpc
       targetPort: 9000
-      # nodePort: 30090
-    - port: 8020
-      name: ipc
-      targetPort: 8020
-  clusterIP: None  # 保持 Headless 用于 StatefulSet 内部 DNS 解析
   selector:
     app: hadoop-namenode
 ---
@@ -29,7 +42,7 @@ metadata:
   name: namenode
   namespace: bigdata4
 spec:
-  serviceName: namenode
+  serviceName: namenode  # 必须指向 Headless Service (上面的第一个 Service)
   replicas: 1
   selector:
     matchLabels:
