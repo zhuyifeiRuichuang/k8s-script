@@ -2,7 +2,7 @@
 部署记录。初始测试。
 ## 镜像
 容器镜像参考[资料](https://github.com/zhuyifeiRuichuang/work-script/tree/main/hadoop/docker.build)打包定制专用镜像。
-
+# 部署
 ```bash
 kubectl create namespace bigdata4
 kubectl apply -f hadoop-configmap.yaml
@@ -11,7 +11,7 @@ kubectl apply -f hadoop-datanode.yaml
 kubectl apply -f hadoop-resourcemanager.yaml
 kubectl apply -f hadoop-nodemanager.yaml
 ```
-部署后查询
+# 部署后查询
 ```bash
 root@master Mon Nov 24 [10:05:40] : /opt/bigdata2/hadoop/v3.1.1/v4
 # kubectl get all -n bigdata4 
