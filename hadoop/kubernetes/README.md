@@ -39,3 +39,5 @@ NAME                        STATUS   VOLUME                                     
 hadoop-dn-data-datanode-0   Bound    pvc-1ce19f52-729d-4d2e-8b4a-6c064b5901fe   20Gi       RWO            local          26m
 hadoop-nn-data-namenode-0   Bound    pvc-8d162dd9-c732-4337-acd2-01945a9ff929   10Gi       RWO            local          33m
 ```
+浏览器访问测试
+<img width="2560" height="1479" alt="image" src="https://github.com/user-attachments/assets/9f70ed80-014a-46fa-b12d-cb3d18da2a41" />
