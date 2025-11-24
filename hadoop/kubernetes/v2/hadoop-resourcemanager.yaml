@@ -6,16 +6,31 @@ metadata:
   labels:
     app: hadoop-resourcemanager
 spec:
-  type: NodePort  # 添加类型
+  ports:
+    - port: 8088
+      name: web
+    - port: 8032
+      name: rpc
+  clusterIP: None
+  selector:
+    app: hadoop-resourcemanager
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: resourcemanager-external
+  namespace: bigdata4
+  labels:
+    app: hadoop-resourcemanager
+spec:
+  type: NodePort
   ports:
     - port: 8088
       name: web
       targetPort: 8088
-      # nodePort: 30088
     - port: 8032
       name: rpc
       targetPort: 8032
-  clusterIP: None
   selector:
     app: hadoop-resourcemanager
 ---
