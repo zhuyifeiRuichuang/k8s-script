@@ -11,8 +11,8 @@ spec:
       name: web
     - port: 9000
       name: rpc
-    - port: 8020
-      name: ipc
+    #- port: 8020
+      #name: ipc
   clusterIP: None  # 必须保留 Headless，供 StatefulSet 内部使用
   selector:
     app: hadoop-namenode
