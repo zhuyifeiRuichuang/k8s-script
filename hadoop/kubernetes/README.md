@@ -6,7 +6,7 @@
 全新环境可直接执行部署命令。  
 利旧环境需修改所有配置文件，关键配置如下所示
 ```bash
-namespace: bigdata4 改为自定义的
+namespace: bigdata4 改为k8s集群中全局唯一的名字
 namenode-0.namenode.bigdata4 中bigdata4改为新的namespace
 ```
 # 部署
