@@ -13,6 +13,8 @@
 将需使用的hadoop.tar.gz文件存放到此目录。例如下载[v3.1.1](https://archive.apache.org/dist/hadoop/common/hadoop-3.1.1/hadoop-3.1.1.tar.gz)  
 
 ## 构建镜像
+修改dockerfile里的Hadoop版本号
+
 ```bash
 docker build -t hadoop:3.1.1 .
 ```
