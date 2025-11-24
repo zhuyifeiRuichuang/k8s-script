@@ -31,7 +31,7 @@ data:
       <!-- 对外宣称的地址 (Client 连接用) -->
       <property>
         <name>dfs.namenode.rpc-address</name>
-        <value>namenode-0.namenode.bigdata4:8020</value>
+        <value>namenode-0.namenode.bigdata4:9000</value>
       </property>
       <!-- 实际监听的地址 (解决 Unresolved address 报错关键) -->
       <property>
