@@ -28,10 +28,9 @@ data:
         <name>dfs.datanode.data.dir</name>
         <value>/opt/hadoop/data/dn</value>
       </property>
-      <!-- 回退：端口恢复为 8020 -->
       <property>
         <name>dfs.namenode.rpc-address</name>
-        <value>namenode-0.namenode.bigdata4:8020</value>
+        <value>namenode-0.namenode.bigdata4:9000</value>
       </property>
       <!-- 绑定 0.0.0.0 解决 Unresolved Address -->
       <property>
