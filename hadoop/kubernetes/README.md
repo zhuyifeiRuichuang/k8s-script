@@ -1,7 +1,7 @@
 # 说明
 在k8s环境部署记录
 ## 镜像
-容器镜像参考[资料](https://github.com/zhuyifeiRuichuang/work-script/tree/main/hadoop/docker.build)打包定制专用镜像。
+容器镜像参考[资料](https://github.com/zhuyifeiRuichuang/work-script/tree/main/hadoop/docker.build)打包定制专用镜像。案例采用Hadoop v3.1.1
 # 部署
 仅供参考，利旧环境请检查yaml文件做完整更新。全新环境可直接使用。
 ```bash
