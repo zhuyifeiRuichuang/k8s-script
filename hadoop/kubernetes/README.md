@@ -48,4 +48,44 @@ hadoop-nn-data-namenode-0   Bound    pvc-8d162dd9-c732-4337-acd2-01945a9ff929   
 测试验证数据持久化，数据持久依赖pv，pv在，数据就在。
 
 ### namenode
+```bash
+# 配置测试数据
+root@master Mon Nov 24 [10:49:38] : /opt/bigdata2/hadoop/v3.1.1/v4
+# kubectl exec -it namenode-0 -n bigdata4 -- /bin/bash
+bash-4.2$ hdfs dfs -mkdir -p /test-namenode-persist
+bash-4.2$ hdfs dfs -ls /
+Found 1 items
+drwxr-xr-x   - hadoop supergroup          0 2025-11-24 02:51 /test-namenode-persist
+bash-4.2$ exit
+exit
+
+# 模拟namenode破坏性故障
+root@master Mon Nov 24 [10:55:48] : /opt/bigdata2/hadoop/v3.1.1/v4
+# kubectl delete pod namenode-0 -n bigdata4
+pod "namenode-0" deleted
+
+# 等待namenode pod自动恢复后，查询历史数据
+root@master Mon Nov 24 [10:57:28] : /opt/bigdata2/hadoop/v3.1.1/v4
+# kubectl exec -it namenode-0 -n bigdata4 -- /bin/bash
+bash-4.2$ hdfs dfs -ls /
+Found 1 items
+drwxr-xr-x   - hadoop supergroup          0 2025-11-24 02:51 /test-namenode-persist
+bash-4.2$ exit
+exit
+root@master Mon Nov 24 [10:58:12] : /opt/bigdata2/hadoop/v3.1.1/v4
+# kubectl exec -it namenode-0 -n bigdata4 -- ls -l /opt/hadoop/data/nn/current/
+total 3108
+-rw-r--r-- 1 hadoop hadoop     216 Nov 24 02:56 VERSION
+-rw-r--r-- 1 hadoop hadoop      42 Nov 24 01:50 edits_0000000000000000001-0000000000000000002
+-rw-r--r-- 1 hadoop hadoop      42 Nov 24 01:50 edits_0000000000000000003-0000000000000000004
+-rw-r--r-- 1 hadoop hadoop      42 Nov 24 01:51 edits_0000000000000000005-0000000000000000006
+-rw-r--r-- 1 hadoop hadoop 1048576 Nov 24 01:51 edits_0000000000000000007-0000000000000000007
+-rw-r--r-- 1 hadoop hadoop 1048576 Nov 24 02:51 edits_0000000000000000008-0000000000000000009
+-rw-r--r-- 1 hadoop users  1048576 Nov 24 02:56 edits_inprogress_0000000000000000010
+-rw-r--r-- 1 hadoop hadoop     391 Nov 24 01:50 fsimage_0000000000000000000
+-rw-r--r-- 1 hadoop hadoop      62 Nov 24 01:50 fsimage_0000000000000000000.md5
+-rw-r--r-- 1 hadoop users      479 Nov 24 02:56 fsimage_0000000000000000009
+-rw-r--r-- 1 hadoop users       62 Nov 24 02:56 fsimage_0000000000000000009.md5
+-rw-r--r-- 1 hadoop users        3 Nov 24 02:56 seen_txid
+```
 ### datanode
