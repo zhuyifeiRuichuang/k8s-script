@@ -1,14 +1,22 @@
+# 说明
+使用docker，基于[Hadoop基础镜像](https://hub.docker.com/r/apache/hadoop-runner)，构建hadoop镜像，可用于Hadoop全量组件部署。  
+可对任意版本Hadoop进行镜像构建。Hadoop[版本查询](https://archive.apache.org/dist/hadoop/common/)。  
+必须使用系统支持的最新版本docker。  
+
+# 二次开发
+无论你对Hadoop代码做任何改动，请将代码打包为`hadoop.tar.gz`文件再用于容器镜像构建。
+# 构建基础镜像
+默认使用Hadoop官方的`apache/hadoop-runner:latest`,基于centos7，内置JDK8。  
+有基础镜像安全更新需求或软件版本更新需求的，可[自定义基础镜像](https://github.com/zhuyifeiRuichuang/work-script/tree/main/hadoop/docker.build/base)。  
 # 构建Hadoop镜像
-基于Hadoop基础镜像，使用docker构建hadoop容器镜像，可对任意版本Hadoop代码进行打包，构建的镜像可用于部署Hadoop全量组件，基础镜像详见`https://hub.docker.com/r/apache/hadoop-runner`。  
-有基础镜像安全更新需求或软件版本更新需求的，可自定义基础镜像，详见目录base。  
 ## 软件准备
-若定制开发，需将打包的Hadoop-版本号.tar.gz存放至本目录下，提前将需使用的hadoop.tar.gz文件下载到此目录。版本详见`https://archive.apache.org/dist/hadoop/common/`  
-例如下载v3.1.1,`https://archive.apache.org/dist/hadoop/common/hadoop-3.1.1/hadoop-3.1.1.tar.gz`  
-推荐使用最新版本docker在当前目录构建容器镜像，例如
+将需使用的hadoop.tar.gz文件存放到此目录。例如下载[v3.1.1](https://archive.apache.org/dist/hadoop/common/hadoop-3.1.1/hadoop-3.1.1.tar.gz)  
+
+## 构建镜像
 ```bash
 docker build -t hadoop:3.1.1 .
 ```
-`log4j.properties`使`kubectl logs`可以直接查看到组件日志。非必须。
+`log4j.properties`使`kubectl logs`可以直接查看到组件日志。可选。
 
 # 可用镜像清单
 以下镜像均使用JDK8。
@@ -24,4 +32,5 @@ ccr.ccs.tencentyun.com/hadoop-dev/hadoop-runner:ubuntu22
 ```bash
 ccr.ccs.tencentyun.com/hadoop-dev/hadoop:3.1.1
 ccr.ccs.tencentyun.com/hadoop-dev/hadoop:3.4.2
+zhuyifeiruichuang/hadoop:3.1.1
 ```
