@@ -33,4 +33,9 @@ statefulset.apps/datanode          1/1     20m
 statefulset.apps/namenode          1/1     27m
 statefulset.apps/nodemanager       1/1     8s
 statefulset.apps/resourcemanager   1/1     76s
+root@master Mon Nov 24 [10:05:42] : /opt/bigdata2/hadoop/v3.1.1/v4
+# kubectl get pvc -n bigdata4 
+NAME                        STATUS   VOLUME                                     CAPACITY   ACCESS MODES   STORAGECLASS   AGE
+hadoop-dn-data-datanode-0   Bound    pvc-1ce19f52-729d-4d2e-8b4a-6c064b5901fe   20Gi       RWO            local          26m
+hadoop-nn-data-namenode-0   Bound    pvc-8d162dd9-c732-4337-acd2-01945a9ff929   10Gi       RWO            local          33m
 ```
