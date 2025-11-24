@@ -2,8 +2,15 @@
 在k8s环境部署记录。根据个人需求选择不同版本配置文件。详见版本目录中说明。
 ## 镜像
 容器镜像参考[资料](https://github.com/zhuyifeiRuichuang/work-script/tree/main/hadoop/docker.build)打包定制专用镜像。案例采用Hadoop v3.1.1
+# 修改yaml文件
+全新环境可直接执行部署命令。
+利旧环境需修改所有配置文件，关键配置如下所示
+```bash
+namespace: bigdata4 改为自定义的
+namenode-0.namenode.bigdata4 中bigdata4改为新的namespace
+```
 # 部署
-仅供参考，利旧环境请检查yaml文件做完整更新。全新环境可直接使用。
+
 ```bash
 kubectl create namespace bigdata4
 kubectl apply -f hadoop-configmap.yaml
