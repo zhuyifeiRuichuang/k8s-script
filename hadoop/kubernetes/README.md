@@ -3,7 +3,7 @@
 ## 镜像
 容器镜像参考[资料](https://github.com/zhuyifeiRuichuang/work-script/tree/main/hadoop/docker.build)打包定制专用镜像。案例采用Hadoop v3.1.1
 # 修改yaml文件
-全新环境可直接执行部署命令。
+全新环境可直接执行部署命令。  
 利旧环境需修改所有配置文件，关键配置如下所示
 ```bash
 namespace: bigdata4 改为自定义的
