@@ -4,7 +4,7 @@
 
 **base**  
  ├─ **scripts**  Hadoop官方脚本  
- └─ **Dockerfile** 不同环境的配置文件
+ └─ **Dockerfile** 不同环境的配置文件  
  └─ **log4j.properties** Hadoop官方配置，使日志暴露，使命令`docker logs`和`kubectl logs`可直接看到日志。
 
 # 构建基础镜像
