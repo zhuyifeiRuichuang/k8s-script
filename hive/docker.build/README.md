@@ -9,7 +9,8 @@ tez与Hadoop的版本兼容性：[tez官方文档](https://tez.apache.org/instal
 Hadoop：[Hadoop版本清单](https://archive.apache.org/dist/hadoop/common/)  
 hive：[hive版本清单](https://archive.apache.org/dist/hive/)  
 tez：[tez版本清单](https://tez.apache.org/releases/index.html)  
-
+## 准备配置文件
+修改目录`conf`中`hive-site.xml`
 ## 构建hive镜像  
 说明：需指定当前目录已有的Hadoop版本，hive版本，tez引擎版本。支持在中国地区网络构建。
 ```bash
