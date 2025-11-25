@@ -1,5 +1,12 @@
 # 说明
 构建容器镜像，可打包任意版本hive。参考[hive官方文档](https://github.com/apache/hive/tree/master/packaging/src/docker)  
+# 构建镜像
+构建后，不会自动清理环境，会残留容器和基础镜像。需自己手动管理。  
+## 思路
+准备软件包。  
+修改配置文件。  
+构建容器镜像。  
+上传到镜像仓库。
 ## 查询版本兼容性
 查询兼容性，选择适配的版本。  
 Hadoop与hive的兼容性查询：[hive官方文档](https://hive.apache.org/general/downloads/)  
