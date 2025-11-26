@@ -39,7 +39,7 @@ docker build \
   --build-arg HADOOP_VERSION=3.1.1 \
   --build-arg HIVE_VERSION=3.1.2 \
   --build-arg TEZ_VERSION=0.9.2 \
-  -t hive-dev:3.1.2 .
+  -t zhuyifeiruichuang/hive:3.1.2 .
 ```
 
 ## 快速测试镜像
