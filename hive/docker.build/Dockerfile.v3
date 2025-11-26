@@ -22,6 +22,9 @@ RUN apt-get update && \
     apt-get clean && \
     rm -rf /var/lib/apt/lists/*
 
+# 若需打包定制数据库驱动jar文件，将驱动文件存放到目录driver
+# COPY driver/*jar /opt/hive/lib/
+
 ENV JAVA_HOME=/usr/lib/jvm/java-8-openjdk-amd64
 ENV HADOOP_HOME=/opt/hadoop
 ENV HIVE_HOME=/opt/hive
