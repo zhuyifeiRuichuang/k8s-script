@@ -1,6 +1,6 @@
 # 说明
 构建容器镜像。参考[hive官方文档](https://github.com/apache/hive/tree/master/packaging/src/docker)  
-适配中国地区网络，规避容器内下载网络不可达地区资源的问题。  
+适配中国地区网络，规避容器内下载软件网络不可达的问题。  
 # Dockerfile版本说明
 | 版本 | 说明 |
 |----|----|
