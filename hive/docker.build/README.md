@@ -1,5 +1,11 @@
 # 说明
 构建容器镜像。参考[hive官方文档](https://github.com/apache/hive/tree/master/packaging/src/docker)  
+# Dockerfile版本说明
+| 版本 | 说明 |
+|----|----|
+| v4 | 用于hive v4版本|
+| v3 | 用于hive v3版本 |
+
 # 构建镜像
 构建后，不会自动清理环境，会残留容器和基础镜像。需自己手动管理。  
 ## 思路
