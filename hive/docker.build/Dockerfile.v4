@@ -50,6 +50,9 @@ COPY --from=env /opt/hadoop-$HADOOP_VERSION /opt/hadoop
 COPY --from=env /opt/apache-hive-$HIVE_VERSION-bin /opt/hive
 COPY --from=env /opt/apache-tez-$TEZ_VERSION-bin /opt/tez
 
+# 若需打包定制数据库驱动jar文件，将驱动文件存放到目录driver
+# COPY driver/*jar /opt/hive/lib/
+
 # Install dependencies
 RUN set -ex; \
     microdnf update -y; \
