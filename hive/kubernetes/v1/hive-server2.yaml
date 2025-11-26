@@ -1,8 +1,29 @@
 apiVersion: v1
 kind: Service
 metadata:
-  name: hiveserver2
+  name: hiveserver2-internal
   namespace: bigdata4
+  labels:
+    app: hiveserver2
+spec:
+  type: ClusterIP
+  ports:
+  - port: 10000
+    targetPort: 10000
+    name: jdbc
+  - port: 10002
+    targetPort: 10002
+    name: http-ui
+  selector:
+    app: hiveserver2
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: hiveserver2-external
+  namespace: bigdata4
+  labels:
+    app: hiveserver2
 spec:
   type: NodePort
   ports:
@@ -40,13 +61,7 @@ spec:
         args:
           - |
             set -e
-            
-            echo "Waiting for Hive Metastore to be ready..."
-            while ! nc -z hive-metastore.bigdata4.svc.cluster.local 9083; do   
-              sleep 1; 
-            done
-            echo "Metastore is up. Starting HiveServer2..."
-            
+
             hive --service hiveserver2
             
         env:
