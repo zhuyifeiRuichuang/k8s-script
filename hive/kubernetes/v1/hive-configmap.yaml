@@ -51,12 +51,12 @@ data:
       </property>
       <property>
         <name>javax.jdo.option.ConnectionURL</name>
-        <value>jdbc:postgresql://postgres-hive-db-internal.bigdata4.svc.cluster.local:5432/hivedb</value>
+        <value>jdbc:mysql://mysql-hive-db-internal.bigdata4.svc.cluster.local:3306/hivedb?createDatabaseIfNotExist=true&amp;useSSL=false&amp;allowPublicKeyRetrieval=true</value>
         <description>JDBC connect string for a JDBC Metastore</description>
       </property>
       <property>
         <name>javax.jdo.option.ConnectionDriverName</name>
-        <value>org.postgresql.Driver</value>
+        <value>com.mysql.cj.jdbc.Driver</value>
         <description>Driver class name for a JDBC Metastore</description>
       </property>
       <property>
