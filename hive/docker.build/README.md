@@ -34,7 +34,11 @@ tez：[tez版本清单](https://tez.apache.org/releases/index.html)
 ```
 若采用`Dockerfile.v3`，构建命令格式如下所示，
 ```bash
-docker build   --build-arg HADOOP_VERSION=3.1.1   --build-arg HIVE_VERSION=3.1.2   --build-arg TEZ_VERSION=0.9.2   -t hive-dev:3.1.2 .
+docker build \
+  --build-arg HADOOP_VERSION=3.1.1 \
+  --build-arg HIVE_VERSION=3.1.2 \
+  --build-arg TEZ_VERSION=0.9.2 \
+  -t hive-dev:3.1.2 .
 ```
 ## 查询构建结果
 ```bash
