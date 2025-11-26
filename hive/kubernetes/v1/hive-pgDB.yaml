@@ -46,7 +46,7 @@ spec:
     spec:
       containers:
       - name: postgres
-        image: postgres:14
+        image: postgres:17
         imagePullPolicy: IfNotPresent
 
         command: ["/bin/bash", "-c"]
