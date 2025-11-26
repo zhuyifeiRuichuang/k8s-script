@@ -1,18 +1,19 @@
 # 说明
 构建容器镜像。参考[hive官方文档](https://github.com/apache/hive/tree/master/packaging/src/docker)  
+适配中国地区网络，规避容器内下载网络不可达地区资源的问题。  
 # Dockerfile版本说明
 | 版本 | 说明 |
 |----|----|
-| v4 | 用于hive v4版本|
-| v3 | 用于hive所有版本 |
+| v4 | 支持hive所有版本，hive官方原版的离线模式改造。 |
+| v3 | 支持hive所有版本，更简单 |
 
 # 构建镜像
 构建后，不会自动清理环境，会残留容器和基础镜像。需自己手动管理。  
 ## 思路
-准备软件包。  
-修改配置文件。  
-构建容器镜像。  
-上传到镜像仓库。
+1. 准备软件包。下载Hadoop，hive，tez软件到当前目录。  下载数据库连接驱动jar文件到目录driver。
+2. 修改配置文件。在目录conf中，修改配置文件。  
+3. 构建容器镜像。  
+4. 上传到镜像仓库。
 ## 查询版本兼容性
 查询兼容性，选择适配的版本。  
 Hadoop与hive的兼容性查询：[hive官方文档](https://hive.apache.org/general/downloads/)  
@@ -26,9 +27,13 @@ tez：[tez版本清单](https://tez.apache.org/releases/index.html)
 ## 准备配置文件
 根据个人需求，修改目录`conf`中`hive-site.xml`，默认可不改。
 ## 构建hive镜像  
-说明：版本只能填写当前目录已有的软件包版本。支持在中国地区网络构建。命令格式如下所示，
+若采用`Dockerfile.v4`，构建命令格式如下所示，
 ```bash
 ./build.sh -hadoop 3.1.1 -tez 0.9.2 -hive 3.1.2
+```
+若采用`Dockerfile.v3`，构建命令格式如下所示，
+```bash
+docker build   --build-arg HADOOP_VERSION=3.1.1   --build-arg HIVE_VERSION=3.1.2   --build-arg TEZ_VERSION=0.9.2   -t hive-dev:3.1.2 .
 ```
 ## 查询构建结果
 ```bash
