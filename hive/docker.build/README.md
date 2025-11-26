@@ -8,7 +8,7 @@
 | v3 | 支持hive所有版本，更简单 |
 
 # 构建镜像
-使用`Dockerfile.v4`构建后，会残留容器和基础镜像。需手动清理环境。  
+使用`Dockerfile.v4`构建镜像会残留容器和基础镜像。需手动清理环境。  
 `entrypoint.sh`是hive官方提供。  
 ## 思路
 1. 准备软件包。下载Hadoop，hive，tez软件到当前目录。  下载数据库连接驱动jar文件到目录driver。
