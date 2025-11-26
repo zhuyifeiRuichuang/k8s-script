@@ -46,7 +46,7 @@ spec:
     spec:
       containers:
       - name: metastore
-        image: docker.1ms.run/zhuyifeiruichuang/hive:3.1.2
+        image: zhuyifeiruichuang/hive:3.1.2
         imagePullPolicy: Always
         securityContext:
           runAsUser: 1001
