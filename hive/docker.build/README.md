@@ -40,17 +40,9 @@ docker build \
   --build-arg TEZ_VERSION=0.9.2 \
   -t hive-dev:3.1.2 .
 ```
-## 查询构建结果
-```bash
-root@VM-8-10-ubuntu Tue Nov 25 [14:01:40] : ~
-# docker images
-                                                                                                                                         i Info →   U  In Use
-IMAGE                           ID             DISK USAGE   CONTENT SIZE   EXTRA
-apache/hive:3.1.2               06826a28c2bd       1.13GB             0B    U   
-moby/buildkit:buildx-stable-1   fe0990fb85c4        227MB             0B    U   
-```
+
 ## 快速测试镜像
-`zhuyifeiruichuang/hive:3.1.2`替换为自己构建的容器镜像。容器状态UP，且容器日志无erro，则是镜像可用。
+测试镜像可用性。容器状态UP，且容器日志无erro，则是镜像可用，重点关注`hive server2`的日志。
 ```bash
 docker run -d -p 9083:9083 --env SERVICE_NAME=metastore --name metastore-standalone zhuyifeiruichuang/hive:3.1.2
 docker run -d -p 10000:10000 -p 10002:10002 --env SERVICE_NAME=hiveserver2 --name hive4 zhuyifeiruichuang/hive:3.1.2
