@@ -1,0 +1,78 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: hive-metastore
+  namespace: bigdata4
+spec:
+  ports:
+  - port: 9083
+    targetPort: 9083
+    name: thrift
+  selector:
+    app: hive-metastore
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: hive-metastore
+  namespace: bigdata4
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: hive-metastore
+  template:
+    metadata:
+      labels:
+        app: hive-metastore
+    spec:
+      containers:
+      - name: metastore
+        image: zhuyifeiruichuang/hive:3.1.2
+        imagePullPolicy: IfNotPresent
+        command: ["/bin/bash", "-c"]
+        args:
+          - |
+            set -e 
+            
+            HADOOP_CONF_DIR="/opt/hadoop/etc/hadoop"
+            HIVE_CONF_DIR="/opt/hive/conf" 
+            
+            echo "Waiting for PostgreSQL DB to be ready..."
+            while ! nc -z postgres-hive-db-internal.bigdata4.svc.cluster.local 5432; do   
+              sleep 1; 
+            done
+            echo "Postgres DB is up."
+            
+            echo "Checking and initializing Metastore Schema..."
+            hive -f ${HIVE_CONF_DIR}/hive-site.xml \
+                 -hiveconf hive.metastore.schema.verification=false \
+                 --service schematool -dbType postgres -validate || \
+            hive -f ${HIVE_CONF_DIR}/hive-site.xml \
+                 -hiveconf hive.metastore.schema.verification=false \
+                 --service schematool -dbType postgres -initSchema
+            
+            echo "Metastore Schema is ready. Starting Metastore Service..."
+            
+            hive --service metastore
+            
+        env:
+          - name: HADOOP_CONF_DIR
+            value: "/opt/hadoop/etc/hadoop"
+          - name: HIVE_CONF_DIR
+            value: "/opt/hive/conf"
+        ports:
+        - containerPort: 9083
+        volumeMounts:
+        - name: hadoop-config-volume
+          mountPath: /opt/hadoop/etc/hadoop
+        - name: hive-config-volume
+          mountPath: /opt/hive/conf/hive-site.xml
+          subPath: hive-site.xml
+      volumes:
+        - name: hadoop-config-volume
+          configMap:
+            name: hadoop-config
+        - name: hive-config-volume
+          configMap:
+            name: hive-config
