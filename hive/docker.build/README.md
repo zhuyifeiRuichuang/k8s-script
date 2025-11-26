@@ -47,3 +47,26 @@ docker build \
 docker run -d -p 9083:9083 --env SERVICE_NAME=metastore --name metastore-standalone zhuyifeiruichuang/hive:3.1.2
 docker run -d -p 10000:10000 -p 10002:10002 --env SERVICE_NAME=hiveserver2 --name hive4 zhuyifeiruichuang/hive:3.1.2
 ```
+若出现类似以下报错，说明镜像构建失败。
+```bash
+2025-11-26T06:03:40,139  WARN [main] server.HiveServer2: Error starting HiveServer2 on attempt 1, will retry in 60000ms
+java.lang.RuntimeException: Error applying authorization policy on hive configuration: class jdk.internal.loader.ClassLoaders$AppClassLoader cannot be cast to class java.net.URLClassLoader (jdk.internal.loader.ClassLoaders$AppClassLoader and java.net.URLClassLoader are in module java.base of loader 'bootstrap')
+	at org.apache.hive.service.cli.CLIService.init(CLIService.java:118) ~[hive-service-3.1.2.jar:3.1.2]
+	at org.apache.hive.service.CompositeService.init(CompositeService.java:59) ~[hive-service-3.1.2.jar:3.1.2]
+	at org.apache.hive.service.server.HiveServer2.init(HiveServer2.java:230) ~[hive-service-3.1.2.jar:3.1.2]
+	at org.apache.hive.service.server.HiveServer2.startHiveServer2(HiveServer2.java:1036) [hive-service-3.1.2.jar:3.1.2]
+	at org.apache.hive.service.server.HiveServer2.access$1600(HiveServer2.java:140) [hive-service-3.1.2.jar:3.1.2]
+	at org.apache.hive.service.server.HiveServer2$StartOptionExecutor.execute(HiveServer2.java:1305) [hive-service-3.1.2.jar:3.1.2]
+	at org.apache.hive.service.server.HiveServer2.main(HiveServer2.java:1149) [hive-service-3.1.2.jar:3.1.2]
+	at jdk.internal.reflect.DirectMethodHandleAccessor.invoke(Unknown Source) ~[?:?]
+	at java.lang.reflect.Method.invoke(Unknown Source) ~[?:?]
+	at org.apache.hadoop.util.RunJar.run(RunJar.java:318) [hadoop-common-3.1.1.jar:?]
+	at org.apache.hadoop.util.RunJar.main(RunJar.java:232) [hadoop-common-3.1.1.jar:?]
+Caused by: java.lang.ClassCastException: class jdk.internal.loader.ClassLoaders$AppClassLoader cannot be cast to class java.net.URLClassLoader (jdk.internal.loader.ClassLoaders$AppClassLoader and java.net.URLClassLoader are in module java.base of loader 'bootstrap')
+	at org.apache.hadoop.hive.ql.session.SessionState.<init>(SessionState.java:413) ~[hive-exec-3.1.2.jar:3.1.2]
+	at org.apache.hadoop.hive.ql.session.SessionState.<init>(SessionState.java:389) ~[hive-exec-3.1.2.jar:3.1.2]
+	at org.apache.hive.service.cli.CLIService.applyAuthorizationConfigPolicy(CLIService.java:128) ~[hive-service-3.1.2.jar:3.1.2]
+	at org.apache.hive.service.cli.CLIService.init(CLIService.java:115) ~[hive-service-3.1.2.jar:3.1.2]
+	... 10 more
+
+```
