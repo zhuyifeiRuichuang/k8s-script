@@ -1,5 +1,5 @@
 # 说明
-构建容器镜像，可打包任意版本hive。参考[hive官方文档](https://github.com/apache/hive/tree/master/packaging/src/docker)  
+构建容器镜像。参考[hive官方文档](https://github.com/apache/hive/tree/master/packaging/src/docker)  
 # 构建镜像
 构建后，不会自动清理环境，会残留容器和基础镜像。需自己手动管理。  
 ## 思路
