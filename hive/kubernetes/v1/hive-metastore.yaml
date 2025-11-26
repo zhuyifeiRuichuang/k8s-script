@@ -46,8 +46,8 @@ spec:
     spec:
       containers:
       - name: metastore
-        image: zhuyifeiruichuang/hive:3.1.2
-        imagePullPolicy: IfNotPresent
+        image: docker.1ms.run/zhuyifeiruichuang/hive:3.1.2
+        imagePullPolicy: Always
         securityContext:
           runAsUser: 1001
         command: ["/bin/bash", "-c"]
@@ -59,12 +59,8 @@ spec:
             HIVE_CONF_DIR="/opt/hive/conf" 
             
             echo "Checking and initializing Metastore Schema..."
-            hive -f ${HIVE_CONF_DIR}/hive-site.xml \
-                 -hiveconf hive.metastore.schema.verification=false \
-                 --service schematool -dbType postgres -validate || \
-            hive -f ${HIVE_CONF_DIR}/hive-site.xml \
-                 -hiveconf hive.metastore.schema.verification=false \
-                 --service schematool -dbType postgres -initSchema
+            hive --service schemaTool -dbType mysql -validate || \
+            hive --service schemaTool -dbType mysql -initSchema
             
             echo "Metastore Schema is ready. Starting Metastore Service..."
             
