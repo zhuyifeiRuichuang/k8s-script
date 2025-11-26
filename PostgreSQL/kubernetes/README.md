@@ -1,5 +1,5 @@
 # 说明
-k8s环境，用于hive metastore对接
+k8s环境，用于hive metastore对接。pg:v18开始，官方做了目录结构调整。
 
 # yaml版本说明
 | 版本 | 说明 |
