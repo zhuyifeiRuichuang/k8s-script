@@ -58,12 +58,6 @@ spec:
             HADOOP_CONF_DIR="/opt/hadoop/etc/hadoop"
             HIVE_CONF_DIR="/opt/hive/conf" 
             
-            echo "Waiting for PostgreSQL DB to be ready..."
-            while ! nc -z postgres-hive-db-internal.bigdata4.svc.cluster.local 5432; do   
-              sleep 1; 
-            done
-            echo "Postgres DB is up."
-            
             echo "Checking and initializing Metastore Schema..."
             hive -f ${HIVE_CONF_DIR}/hive-site.xml \
                  -hiveconf hive.metastore.schema.verification=false \
