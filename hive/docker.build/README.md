@@ -43,4 +43,5 @@ moby/buildkit:buildx-stable-1   fe0990fb85c4        227MB             0B    U
 `zhuyifeiruichuang/hive:3.1.2`替换为自己构建的容器镜像。快速测试构建的容器镜像是否可用，能启动运行就是可用。
 ```bash
 docker run -d -p 9083:9083 --env SERVICE_NAME=metastore --name metastore-standalone zhuyifeiruichuang/hive:3.1.2
+docker run -d -p 10000:10000 -p 10002:10002 --env SERVICE_NAME=hiveserver2 --name hive4 zhuyifeiruichuang/hive:3.1.2
 ```
