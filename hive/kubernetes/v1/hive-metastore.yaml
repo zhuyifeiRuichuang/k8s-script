@@ -47,7 +47,7 @@ spec:
       containers:
       - name: metastore
         image: zhuyifeiruichuang/hive:3.1.2
-        imagePullPolicy: Always
+        imagePullPolicy: IfNotPresent
         securityContext:
           runAsUser: 1001
         command: ["/bin/bash", "-c"]
