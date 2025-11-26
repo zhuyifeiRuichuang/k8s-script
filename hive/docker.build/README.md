@@ -40,7 +40,7 @@ apache/hive:3.1.2               06826a28c2bd       1.13GB             0B    U
 moby/buildkit:buildx-stable-1   fe0990fb85c4        227MB             0B    U   
 ```
 ## 快速测试镜像
-`zhuyifeiruichuang/hive:3.1.2`替换为自己构建的容器镜像。快速测试构建的容器镜像是否可用，能启动运行就是可用。
+`zhuyifeiruichuang/hive:3.1.2`替换为自己构建的容器镜像。容器状态UP，且容器日志无erro，则是镜像可用。
 ```bash
 docker run -d -p 9083:9083 --env SERVICE_NAME=metastore --name metastore-standalone zhuyifeiruichuang/hive:3.1.2
 docker run -d -p 10000:10000 -p 10002:10002 --env SERVICE_NAME=hiveserver2 --name hive4 zhuyifeiruichuang/hive:3.1.2
