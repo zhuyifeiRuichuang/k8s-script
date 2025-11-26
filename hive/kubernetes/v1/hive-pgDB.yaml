@@ -4,7 +4,7 @@ metadata:
   name: postgres-hive-db
   namespace: bigdata4
   labels:
-    app: postgres-hive-db
+    app: postgres-hive-db-internal
 spec:
   ports:
     - port: 5432
