@@ -4,3 +4,5 @@
 | host | 主机环境 |
 | docker | docker 环境 |
 | kubernetes | k8s环境 |
+
+有构建hive容器镜像需求的，查看目录`docker.build`
