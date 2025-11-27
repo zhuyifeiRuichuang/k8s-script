@@ -32,7 +32,7 @@ ENV PATH="${JAVA_HOME}/bin:${HIVE_HOME}/bin:${HADOOP_HOME}/bin:${TEZ_HOME}/bin:$
 
 COPY entrypoint.sh /
 COPY conf ${HIVE_HOME}/conf
-COPY driver/*.jar /opt/hive/lib/
+COPY JDBC/*.jar /opt/hive/lib/
 
 RUN chmod +x /entrypoint.sh && \
     chmod -R 755 ${HIVE_HOME}/conf
