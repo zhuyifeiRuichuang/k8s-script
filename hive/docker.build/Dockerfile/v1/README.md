@@ -1,9 +1,12 @@
+# 版本说明
 | 版本 | 说明 |
 |----|----|
 | v1 | 基于Ubuntu24的普通版本 |
 | v2 | 基于v1,删除内置的Ubuntu用户，添加iceberg支持。 |
+
 # 构建命令案例
-# v1
+构建镜像命令示例，版本自选。
+## v1
 ```bash
 docker build \
   --build-arg HADOOP_VERSION=3.1.1 \
@@ -12,7 +15,7 @@ docker build \
   -t zhuyifeiruichuang/hive:3.1.2 .
 ```
 
-# v2
+## v2
 ```bash
 docker build \
   --build-arg HADOOP_VERSION=3.1.1 \
