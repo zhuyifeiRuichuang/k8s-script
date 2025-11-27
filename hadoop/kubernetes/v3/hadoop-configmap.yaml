@@ -8,8 +8,8 @@ data:
     <?xml version="1.0"?>
     <configuration>
       <property>
-        <name>fs.default.name</name>
-        <value>hdfs://namenode-0.namenode.bigdata4:9000</value>
+        <name>hadoop.tmp.dir</name>
+        <value>/opt/hadoop/tmpdata</value>
       </property>
       <property>
         <name>fs.defaultFS</name>
@@ -21,6 +21,22 @@ data:
       </property>
       <property>
         <name>hadoop.proxyuser.hadoop.groups</name>
+        <value>*</value>
+      </property>
+      <property>
+        <name>hadoop.proxyuser.hue.hosts</name>
+        <value>*</value>
+      </property>
+      <property>
+        <name>hadoop.proxyuser.hue.groups</name>
+        <value>*</value>
+      </property>
+      <property>
+        <name>hadoop.proxyuser.hive.hosts</name>
+        <value>*</value>
+      </property>
+      <property>
+        <name>hadoop.proxyuser.hive.groups</name>
         <value>*</value>
       </property>
       <property>
