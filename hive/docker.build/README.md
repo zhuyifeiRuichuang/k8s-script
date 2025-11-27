@@ -23,20 +23,8 @@ JDBC: 详见目录`JDBC`
 iceberg：详见目录`iceberg`
 ## 准备配置文件
 根据个人需求，修改目录`conf`中`hive-site.xml`，默认可不改。
-## 构建hive镜像  
-若采用`Dockerfile.v4`，构建命令格式如下所示，
-```bash
-./build.sh -hadoop 3.1.1 -tez 0.9.2 -hive 3.1.2
-```
-若采用`Dockerfile.v3`，构建命令格式如下所示，
-```bash
-docker build \
-  --build-arg HADOOP_VERSION=3.1.1 \
-  --build-arg HIVE_VERSION=3.1.2 \
-  --build-arg TEZ_VERSION=0.9.2 \
-  -t zhuyifeiruichuang/hive:3.1.2 .
-```
-
+## 构建hive镜像
+命令格式详见目录`Dockerfile`
 ## 快速测试镜像
 测试镜像可用性。容器状态UP，且容器日志无erro，则是镜像可用，重点关注`hive server2`的日志。
 ```bash
