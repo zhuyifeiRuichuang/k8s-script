@@ -98,16 +98,12 @@ data:
         <value>resourcemanager-0.resourcemanager.bigdata4</value>
       </property>
       <property>
-        <name>yarn.nodemanager.hostname</name>
-        <value>nodemanager-0.nodemanager.bigdata4</value>
-      </property>
-      <property>
         <name>yarn.resourcemanager.bind-host</name>
         <value>0.0.0.0</value>
       </property>
       <property>
         <name>yarn.resourcemanager.webapp.address</name>
-        <value>0.0.0.0</value>
+        <value>0.0.0.0:8088</value>
       </property>
       <property>
         <name>yarn.nodemanager.bind-host</name>
