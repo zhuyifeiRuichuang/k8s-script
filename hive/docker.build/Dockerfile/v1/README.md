@@ -5,7 +5,7 @@
 | v2 | 基于v1,删除内置的Ubuntu用户，添加iceberg支持。 |
 # 集成iceberg
 参考[官方文档](https://iceberg.apache.org/docs/latest/hive/#feature-support)  
-hiv 4开始，内置iceberg。低于4版本的，需单独集成 Iceberg 1.6.1或自己期望使用的版本。  
+hiv 4开始，内置iceberg，使用v1构建。低于4版本的，需单独集成 Iceberg 1.6.1或自己期望使用的版本，使用v2构建。  
 
 # 构建命令案例
 构建镜像命令示例，版本自选。
