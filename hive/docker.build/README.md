@@ -25,7 +25,8 @@ tez与Hadoop的版本兼容性：[tez官方文档](https://tez.apache.org/instal
 Hadoop：[Hadoop版本清单](https://archive.apache.org/dist/hadoop/common/)  
 hive：[hive版本清单](https://archive.apache.org/dist/hive/)  
 tez：[tez版本清单](https://tez.apache.org/releases/index.html)  
-mysql connect java driver: [版本清单](https://mvnrepository.com/artifact/mysql/mysql-connector-java)
+JDBC: 详见目录`JDBC`
+
 ## 准备配置文件
 根据个人需求，修改目录`conf`中`hive-site.xml`，默认可不改。
 ## 构建hive镜像  
