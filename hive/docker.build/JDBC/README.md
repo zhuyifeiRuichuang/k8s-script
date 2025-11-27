@@ -1,4 +1,4 @@
-将数据库专用`connector.jar`文件存放在此处。下载文件后手动提取jar文件到本目录。  
+将数据库专用`connector.jar`文件存放在此处。下载文件后手动提取jar文件到本目录。此目录仅保留一定会用到的jar文件。  
 # MySQL
 [版本清单](https://downloads.mysql.com/archives/c-j/)  
 下图所示
