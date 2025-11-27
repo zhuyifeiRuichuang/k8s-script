@@ -19,7 +19,7 @@ COPY apache-hive-${HIVE_VERSION}-bin.tar.gz /opt/
 COPY apache-tez-${TEZ_VERSION}-bin.tar.gz  /opt/
 
 RUN apt-get update && \
-    apt-get install -y --no-install-recommends openjdk-8-jdk && \
+    apt-get install -y --no-install-recommends openjdk-8-jdk sudo && \
     tar -xzf /opt/hadoop-${HADOOP_VERSION}.tar.gz -C /opt/ && \
     mv /opt/hadoop-${HADOOP_VERSION} /opt/hadoop && \
     rm -rf /opt/hadoop/share/doc/* && \
