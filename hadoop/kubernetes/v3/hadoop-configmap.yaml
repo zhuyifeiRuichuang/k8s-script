@@ -211,4 +211,8 @@ data:
         <name>yarn.scheduler.capacity.node-locality-delay</name>
         <value>40</value>
       </property>
+      <property>
+        <name>yarn.scheduler.capacity.root.default.acl_application_max_priority</name>
+        <value>*</value>
+      </property>
     </configuration>
