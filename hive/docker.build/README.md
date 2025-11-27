@@ -11,7 +11,7 @@
 使用`Dockerfile.v4`构建镜像会残留临时容器和基础镜像。需手动清理环境。  
 `entrypoint.sh`是hive官方提供。  
 ## 思路
-1. 准备软件包。下载Hadoop，hive，tez软件到当前目录。  下载数据库连接驱动jar文件到目录driver。
+1. 准备软件包。  
 2. 修改配置文件。在目录conf中，修改配置文件。  
 3. 构建容器镜像。  
 4. 上传到镜像仓库。
@@ -26,7 +26,7 @@ Hadoop：[Hadoop版本清单](https://archive.apache.org/dist/hadoop/common/)
 hive：[hive版本清单](https://archive.apache.org/dist/hive/)  
 tez：[tez版本清单](https://tez.apache.org/releases/index.html)  
 JDBC: 详见目录`JDBC`
-
+iceberg：详见目录`iceberg`
 ## 准备配置文件
 根据个人需求，修改目录`conf`中`hive-site.xml`，默认可不改。
 ## 构建hive镜像  
