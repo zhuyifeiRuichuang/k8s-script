@@ -21,3 +21,8 @@ docker build \
   --build-arg ICEBERG_VERSION=1.4.2 \
   -t zhuyifeiruichuang/hive:3.1.2 .
 ```
+注意：若使用此构建方法的镜像，应修改k8s部署文件中配置
+```bash
+securityContext:
+          runAsUser: 1000
+```
