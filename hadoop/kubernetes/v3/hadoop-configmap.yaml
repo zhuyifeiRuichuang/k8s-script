@@ -98,7 +98,15 @@ data:
         <value>resourcemanager-0.resourcemanager.bigdata4</value>
       </property>
       <property>
+        <name>yarn.nodemanager.hostname</name>
+        <value>nodemanager-0.nodemanager.bigdata4</value>
+      </property>
+      <property>
         <name>yarn.resourcemanager.bind-host</name>
+        <value>0.0.0.0</value>
+      </property>
+      <property>
+        <name>yarn.resourcemanager.webapp.address</name>
         <value>0.0.0.0</value>
       </property>
       <property>
@@ -120,6 +128,18 @@ data:
       <property>
         <name>yarn.nodemanager.aux-services</name>
         <value>mapreduce_shuffle</value>
+      </property>
+      <property>
+        <name>yarn.nodemanager.aux-services.mapreduce_shuffle.class</name>
+        <value>org.apache.hadoop.mapred.ShuffleHandler</value>
+      </property>
+      <property>
+        <name>yarn.acl.enable</name>
+        <value>false</value>
+      </property>
+      <property>
+        <name>yarn.nodemanager.env-whitelist</name>
+        <value>JAVA_HOME,HADOOP_COMMON_HOME,HADOOP_HDFS_HOME,HADOOP_CONF_DIR,CLASSPATH_PREPEND_DISTCACHE,HADOOP_YARN_HOME,HADOOP_HOME,PATH,LANG,TZ,HADOOP_MAPRED_HOME</value>
       </property>
     </configuration>
 
