@@ -1,6 +1,7 @@
 # 说明
 构建容器镜像。参考[hive官方文档](https://github.com/apache/hive/tree/master/packaging/src/docker)  
 适配中国地区网络，规避容器内下载软件网络不可达的问题。  
+`entrypoint.sh`是hive官方提供。  
 # 选择Dockerfile
 详见目录`Dockerfile`
 ## 思路
