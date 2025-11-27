@@ -2,18 +2,20 @@
 构建容器镜像。参考[hive官方文档](https://github.com/apache/hive/tree/master/packaging/src/docker)  
 适配中国地区网络，规避容器内下载软件网络不可达的问题。  
 `entrypoint.sh`是hive官方提供。  
-# 选择Dockerfile
-详见目录`Dockerfile`
+
 ## 思路
-1. 准备软件包。  
-2. 修改配置文件。在目录conf中，修改配置文件。  
-3. 构建容器镜像。  
-4. 上传到镜像仓库。
+1. 选择dockerfile。  
+2. 准备软件包。  
+3. 修改配置文件。在目录conf中，修改配置文件。  
+4. 构建容器镜像。  
+5. 上传到镜像仓库。
 ## 查询版本兼容性
 查询兼容性，选择适配的版本。  
 Hadoop与hive的兼容性查询：[hive官方文档](https://hive.apache.org/general/downloads/)  
 hive与tez版本兼容性：暂无  
 tez与Hadoop的版本兼容性：[tez官方文档](https://tez.apache.org/install.html)
+## 选择Dockerfile
+详见目录`Dockerfile`
 ## 下载软件包
 需将下载软件包到当前目录，包含以下：  
 Hadoop：[Hadoop版本清单](https://archive.apache.org/dist/hadoop/common/)  
