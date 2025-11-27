@@ -28,9 +28,13 @@ iceberg：详见目录`iceberg`
 ## 构建hive镜像
 命令格式详见目录`Dockerfile`
 ## 快速测试镜像
-测试镜像可用性。容器状态UP，且容器日志无erro，则是镜像可用，重点关注`hive server2`的日志。
+测试镜像可用性。容器状态UP，且容器日志无erro，则是镜像可用，重点关注`hive server2`的日志。  
+测试metastore
 ```bash
 docker run -d -p 9083:9083 --env SERVICE_NAME=metastore --name metastore-standalone zhuyifeiruichuang/hive:3.1.2
+```
+测试hive server2
+```bash
 docker run -d -p 10000:10000 -p 10002:10002 --env SERVICE_NAME=hiveserver2 --name hive4 zhuyifeiruichuang/hive:3.1.2
 ```
 若出现类似以下报错，说明镜像构建失败。
