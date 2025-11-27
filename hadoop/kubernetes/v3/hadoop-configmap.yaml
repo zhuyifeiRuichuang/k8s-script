@@ -80,6 +80,10 @@ data:
         <name>dfs.client.use.datanode.hostname</name>
         <value>true</value>
       </property>
+      <property>
+        <name>dfs.permissions.enabled</name>
+        <value>false</value>
+      </property>
     </configuration>
 
   yarn-site.xml: |
