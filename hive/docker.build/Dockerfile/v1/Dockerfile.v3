@@ -1,0 +1,71 @@
+FROM ubuntu:22.04
+
+ARG HADOOP_VERSION
+ARG HIVE_VERSION
+ARG TEZ_VERSION
+ARG ICEBERG_VERSION
+
+# 环境变量配置
+ENV JAVA_HOME=/usr/lib/jvm/java-8-openjdk-amd64
+ENV HADOOP_HOME=/opt/hadoop
+ENV HIVE_HOME=/opt/hive
+ENV TEZ_HOME=/opt/tez
+ENV HIVE_VER=${HIVE_VERSION}
+ENV HIVE_LOG_DIR=/var/log/hive
+ENV PATH="${JAVA_HOME}/bin:${HIVE_HOME}/bin:${HADOOP_HOME}/bin:${TEZ_HOME}/bin:$PATH"
+
+COPY hadoop-${HADOOP_VERSION}.tar.gz    /opt/
+COPY apache-hive-${HIVE_VERSION}-bin.tar.gz /opt/
+COPY apache-tez-${TEZ_VERSION}-bin.tar.gz  /opt/
+
+RUN apt-get update && \
+    apt-get install -y --no-install-recommends openjdk-8-jdk sudo && \
+    tar -xzf /opt/hadoop-${HADOOP_VERSION}.tar.gz -C /opt/ && \
+    mv /opt/hadoop-${HADOOP_VERSION} /opt/hadoop && \
+    rm -rf /opt/hadoop/share/doc/* && \
+    tar -xzf /opt/apache-hive-${HIVE_VERSION}-bin.tar.gz -C /opt/ && \
+    mv /opt/apache-hive-${HIVE_VERSION}-bin /opt/hive && \
+    tar -xzf /opt/apache-tez-${TEZ_VERSION}-bin.tar.gz -C /opt/ && \
+    mv /opt/apache-tez-${TEZ_VERSION}-bin /opt/tez && \
+    cp $TEZ_HOME/*.jar $HIVE_HOME/lib/ && \
+    cp $TEZ_HOME/lib/*.jar $HIVE_HOME/lib/ && \
+    rm -rf /opt/tez/share/* && \
+    rm -f /opt/*.tar.gz && \
+    apt-get clean && \
+    rm -rf /var/lib/apt/lists/*
+
+COPY entrypoint.sh  /
+COPY conf           ${HIVE_HOME}/conf
+COPY JDBC/*.jar     /opt/hive/lib/
+COPY iceberg/iceberg-core-${ICEBERG_VERSION}.jar /opt/hive/lib/
+
+RUN groupadd --gid 1000 hive && \
+    useradd --uid 1000 --gid 100 --groups 1000 --home /opt/hive hive && \
+    echo "hive ALL=(ALL) NOPASSWD: ALL" >> /etc/sudoers && \
+	chmod +x /entrypoint.sh && \
+    chmod -R 755 ${HIVE_HOME}/conf && \
+    chown hive:users /opt && \
+    mkdir -p \
+        /opt/hive/data/warehouse \
+        /home/hive/.beeline \
+        ${HIVE_LOG_DIR} \
+        /data && \
+    chown -R hive:hive \
+        /opt/hadoop \
+        /opt/hive \
+        /opt/tez \
+        ${HIVE_LOG_DIR} \
+        /data \
+        /home/hive && \
+    chmod -R 755 \
+        /opt/hadoop \
+        /opt/hive \
+        /opt/tez \
+        ${HIVE_LOG_DIR} \
+        /data \
+        /home/hive
+
+USER hive
+WORKDIR /opt/hive
+EXPOSE 10000 10002 9083
+ENTRYPOINT ["sh", "-c", "/entrypoint.sh"]
