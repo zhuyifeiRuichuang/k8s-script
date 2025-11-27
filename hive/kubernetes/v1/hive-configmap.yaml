@@ -29,6 +29,11 @@ data:
       <!-- 2. Iceberg Configuration -->
       <!-- ======================================= -->
       <property>
+        <name>iceberg.engine.hive.enabled</name>
+        <value>true</value>
+        <description>Enable Hive engine to support Iceberg table operations</description>
+      </property>
+      <property>
         <name>hive.imetastore.catalog.default</name>
         <value>hadoop_prod</value>
         <description>Default Iceberg catalog implementation</description>
