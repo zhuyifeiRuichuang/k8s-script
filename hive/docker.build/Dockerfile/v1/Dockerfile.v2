@@ -18,6 +18,8 @@ RUN apt-get update && \
     mv /opt/apache-hive-${HIVE_VERSION}-bin /opt/hive && \
     tar -xzf /opt/apache-tez-${TEZ_VERSION}-bin.tar.gz -C /opt/ && \
     mv /opt/apache-tez-${TEZ_VERSION}-bin /opt/tez && \
+    cp $TEZ_HOME/*.jar $HIVE_HOME/lib/ && \
+    cp $TEZ_HOME/lib/*.jar $HIVE_HOME/lib/ && \
     rm -rf /opt/tez/share/* && \
     rm -f /opt/*.tar.gz && \
     apt-get clean && \
@@ -36,8 +38,6 @@ COPY entrypoint.sh  /
 COPY conf           ${HIVE_HOME}/conf
 COPY JDBC/*.jar     /opt/hive/lib/
 COPY iceberg/iceberg-core-${ICEBERG_VERSION}.jar /opt/hive/lib/
-COPY $TEZ_HOME/*.jar      $HIVE_HOME/lib/
-COPY $TEZ_HOME/lib/*.jar  $HIVE_HOME/lib/
 
 RUN userdel -r ubuntu || true && \
     groupdel ubuntu || true && \
