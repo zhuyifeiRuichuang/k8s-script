@@ -37,10 +37,8 @@ COPY entrypoint.sh  /
 COPY conf           ${HIVE_HOME}/conf
 COPY JDBC/*.jar     /opt/hive/lib/
 
-# 注：打包hive 4及更高版本时，注释此行
 COPY iceberg/iceberg-core-${ICEBERG_VERSION}.jar /opt/hive/lib/
 
-# 复制Tez核心包到Hive lib目录。不用时可注释此行。
 COPY $TEZ_HOME/*.jar      $HIVE_HOME/lib/
 COPY $TEZ_HOME/lib/*.jar  $HIVE_HOME/lib/
 
