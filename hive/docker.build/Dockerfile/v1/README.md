@@ -1,8 +1,10 @@
 # 版本说明
 | 版本 | 说明 |
 |----|----|
-| v1 | 基于Ubuntu24的普通版本，能用就行 |
+| v1 | 初始版，能用就行 |
 | v2 | 基于v1，删除内置的Ubuntu用户，添加iceberg支持，hive可`sudo su -`切换到root。支持扩展插件。 |
+| v3 | 基于v2，改用ubuntu22基础镜像，取消删除ubuntu用户资源操作，Ubuntu22无内置Ubuntu用户。|
+
 # 集成iceberg
 参考[官方文档](https://iceberg.apache.org/docs/latest/hive/#feature-support)  
 hiv 4开始内置iceberg，使用v1构建。  
