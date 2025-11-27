@@ -32,13 +32,10 @@ ENV HIVE_VER=${HIVE_VERSION}
 ENV HIVE_LOG_DIR=/var/log/hive
 ENV PATH="${JAVA_HOME}/bin:${HIVE_HOME}/bin:${HADOOP_HOME}/bin:${TEZ_HOME}/bin:$PATH"
 
-# 复制启动脚本、配置文件、JDBC驱动
 COPY entrypoint.sh  /
 COPY conf           ${HIVE_HOME}/conf
 COPY JDBC/*.jar     /opt/hive/lib/
-
 COPY iceberg/iceberg-core-${ICEBERG_VERSION}.jar /opt/hive/lib/
-
 COPY $TEZ_HOME/*.jar      $HIVE_HOME/lib/
 COPY $TEZ_HOME/lib/*.jar  $HIVE_HOME/lib/
 
