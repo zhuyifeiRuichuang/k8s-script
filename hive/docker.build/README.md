@@ -56,6 +56,3 @@ Caused by: java.lang.ClassCastException: class jdk.internal.loader.ClassLoaders$
 	... 10 more
 
 ```
-# 集成iceberg
-参考[官方文档](https://iceberg.apache.org/docs/latest/hive/#feature-support)  
-hiv 4开始，内置iceberg。低于4版本的，需单独集成 Iceberg 1.6.1 。
