@@ -29,9 +29,9 @@ fi
 echo "✅ 前置检查通过，开始构建前端代码..."
 
 # ===================== 核心构建逻辑 =====================
-docker run --rm \  # 移除-it，自动化运行；--rm确保容器退出后删除
-    -v "$(pwd):${CONTAINER_WORKDIR}" \  # 路径加引号，兼容特殊字符
-    -w "${CONTAINER_WORKDIR}" \         # 容器内工作目录直接设为/app（宿主机当前目录）
+docker run --rm --name packing-web \
+    -v "$(pwd):${CONTAINER_WORKDIR}" \
+    -w "${CONTAINER_WORKDIR}" \
     node:${NODE_VERSION} \
     /bin/bash -c "
         set -euo pipefail
