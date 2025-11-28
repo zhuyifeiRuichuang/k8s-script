@@ -29,7 +29,7 @@ fi
 echo "✅ 前置检查通过，开始构建前端代码..."
 
 # ===================== 核心构建逻辑 =====================
-docker run --rm --name packing-web \
+docker run --rm --name build-web \
     -v "$(pwd):${CONTAINER_WORKDIR}" \
     -w "${CONTAINER_WORKDIR}" \
     node:${NODE_VERSION} \
