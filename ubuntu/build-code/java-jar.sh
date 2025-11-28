@@ -8,7 +8,7 @@ BASE_IMAGE="ubuntu:24.04"         # 基础镜像
 LOCAL_PROJECT_DIR="./"            # 本地项目目录
 JDK_PACKAGE="openjdk-21-jdk"      # JDK包名
 MAVEN_VERSION="3.9.11"            # Maven版本
-CONTAINER_NAME="packing-java-code"  # 临时容器名称
+CONTAINER_NAME="build-java-code"  # 临时容器名称
 # ==============================================
 
 # 容器内固定挂载目录（非根目录，彻底避免挂载到/的错误）
